@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="ใครทำก็ได้" />
+<meta name="theme-color" content="#14101c" />
+<title>ใครทำก็ได้</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#14101c; --panel:#1e1829; --line:#3a2f4d; --text:#fff5ee; --mute:#b9a9c9;
+  --sdg:#ff5a3c; --m:#4aa8ff; --f:#ff6fb1; --any:#ffd166;
+  --g:clamp(8px,1.6vmin,20px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;overflow:hidden}
+body{height:100dvh;background:radial-gradient(70vmax 60vmax at 100% 0%,rgba(255,90,60,.14),transparent 60%),var(--bg);color:var(--text);font-family:'Prompt',sans-serif;
+  display:flex;flex-direction:column;gap:var(--g);
+  padding:max(var(--g),env(safe-area-inset-top)) max(var(--g),env(safe-area-inset-right)) max(var(--g),env(safe-area-inset-bottom)) max(var(--g),env(safe-area-inset-left))}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:clamp(8px,1.6vmin,16px)}
+h1{margin:0;font-size:clamp(22px,4vmin,48px);font-weight:800;line-height:1.1}
+h1 span{color:var(--any)}
+.sdg{background:var(--sdg);color:#fff;font-weight:800;font-size:clamp(11px,1.7vmin,20px);padding:.3em .8em;border-radius:10px;white-space:nowrap}
+.wrap{flex:1;min-height:0;display:grid;grid-template-columns:1fr}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:clamp(14px,2.2vmin,28px);padding:var(--g);min-height:0}
+.left{display:flex;flex-direction:column;gap:var(--g)}
+.meta{display:flex;justify-content:space-between;color:var(--mute);font-size:clamp(13px,2vmin,24px)}
+.stage{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}
+.emoji{font-size:clamp(48px,13vmin,170px);line-height:1.1}
+.word{font-size:clamp(34px,9vmin,120px);font-weight:800;line-height:1.2}
+.hint{font-size:clamp(16px,2.8vmin,36px);color:var(--mute);margin-top:.4em;min-height:1.5em}
+.count{font-size:clamp(60px,16vmin,220px);font-weight:800;color:var(--any);line-height:1;animation:pop .9s ease-out}
+.reveal{animation:fade .45s ease-out}
+.reveal .any{font-size:clamp(28px,6.5vmin,90px);font-weight:800;color:var(--any);margin:.15em 0}
+.reveal .think{font-size:clamp(17px,3.2vmin,42px);line-height:1.45;max-width:22em}
+.reveal .first{font-size:clamp(13px,2vmin,24px);color:var(--mute);margin-top:.8em}
+.btns{display:flex;flex-wrap:wrap;gap:clamp(6px,1.2vmin,14px)}
+.btns.act button{flex:1 1 0}
+button{font:inherit;cursor:pointer;border:0;border-radius:clamp(10px,1.6vmin,18px);
+  padding:clamp(10px,1.8vmin,22px) clamp(12px,2.2vmin,28px);font-size:clamp(15px,2.6vmin,32px);font-weight:600;
+  background:#34294a;color:var(--text);transition:transform .1s,opacity .2s;touch-action:manipulation}
+button:hover:not(:disabled){transform:translateY(-1px)}
+button:disabled{opacity:.3;cursor:not-allowed}
+.b-go{background:var(--sdg);color:#fff}
+.b-m{background:var(--m);color:#06213a} .b-f{background:var(--f);color:#3a0620} .b-a{background:var(--any);color:#2a2000}
+.sm{font-size:clamp(12px,1.8vmin,22px);padding:clamp(6px,1.1vmin,14px) clamp(10px,1.6vmin,20px)}
+[hidden]{display:none!important}
+.tally{display:flex;gap:var(--g);justify-content:center;font-size:clamp(13px,2vmin,24px);color:var(--mute)}
+.tally b{font-size:1.3em;margin-left:.3em}
+.tally .tm b{color:var(--m)} .tally .tf b{color:var(--f)} .tally .ta b{color:var(--any)}
+
+.foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+
+.ov{position:fixed;inset:0;background:radial-gradient(ellipse at top,#3b1a2b 0%,rgba(12,8,18,.97) 70%);display:none;align-items:center;justify-content:center;flex-direction:column;z-index:10;padding:max(24px,5vmin);gap:clamp(14px,3vmin,32px)}
+.ov.show{display:flex}
+.box{max-width:min(1400px,92vw);max-height:76dvh;overflow:auto;animation:fade .5s ease-out}
+.who{color:var(--any);font-weight:600;font-size:clamp(16px,3vmin,34px);margin-bottom:.6em;display:flex;align-items:center;gap:.5em}
+.who::after{content:'';flex:1;height:2px;background:linear-gradient(90deg,rgba(255,209,102,.5),transparent)}
+blockquote{margin:0;font-size:clamp(20px,4.8vmin,64px);line-height:1.55;padding-left:.9em;border-left:4px solid var(--any)}
+cite{display:block;margin-top:1.1em;font-style:normal;color:var(--mute);font-size:clamp(13px,2vmin,24px);line-height:1.5}
+.stats{display:flex;gap:clamp(12px,3vmin,40px);justify-content:center;margin:.6em 0;font-size:clamp(16px,3vmin,36px)}
+.stats div{text-align:center} .stats b{display:block;font-size:2.4em;line-height:1}
+.note{color:var(--mute);font-size:clamp(15px,2.6vmin,30px);text-align:center;line-height:1.5}
+@keyframes pop{0%{transform:scale(1.6);opacity:0}30%{transform:scale(1);opacity:1}100%{opacity:1}}
+@keyframes fade{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><h1>ใครทำ<span>ก็ได้</span></h1><span class="sdg">SDGs 5 · ความเสมอภาคทางเพศ</span></div>
+  <div class="btns">
+    <button class="sm" id="bHow">❓ วิธีเล่น</button>
+    <button class="sm" id="bAsk">💭 คำถามสะกิดใจ</button>
+    <button class="sm" id="bQt">💬 คำกล่าว อ.อิเคดะ</button>
+    <button class="sm" id="bFs">⛶ เต็มจอ</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="panel left">
+    <div class="meta"><span id="rNo">รอบที่ —</span><span id="rLeft"></span></div>
+    <div class="stage" id="stage"></div>
+    <div class="btns act" id="ans" hidden>
+      <button class="b-m" data-a="m">👨 ชาย</button>
+      <button class="b-f" data-a="f">👩 หญิง</button>
+      <button class="b-a" data-a="a">🌈 ใครก็ได้</button>
+    </div>
+    <div class="btns act"><button class="b-go" id="bNext">▶ เริ่ม</button></div>
+    <div class="foot">
+      <div class="tally">ความรู้สึกแรกของห้องเรา:
+        <span class="tm">ชาย<b id="tM">0</b></span><span class="tf">หญิง<b id="tF">0</b></span><span class="ta">ใครก็ได้<b id="tA">0</b></span>
+      </div>
+      <span class="btns"><button class="sm" id="bEnd">🏁 สรุป</button><button class="sm" id="bReset">เริ่มใหม่</button></span>
+    </div>
+  </div>
+
+</div>
+
+<div class="ov" id="ov">
+  <div class="box" id="ovBox"></div>
+  <div class="btns"><button id="ovPrev">← ก่อนหน้า</button><button class="b-go" id="ovNext">ถัดไป →</button><button id="ovClose">ปิด</button></div>
+</div>
+
+<script>
+// [emoji, คำ, ชวนคิดหลังเฉลย]
+const WORDS = [
+  ['🍳','ทำกับข้าว','ใครหิวก็ทำได้ ใครทำอร่อยก็ได้เป็นเชฟ'],
+  ['🔧','ซ่อมของในบ้าน','ความถนัดมาจากการฝึก ไม่ได้มาจากเพศ'],
+  ['😢','ร้องไห้','การร้องไห้ไม่ใช่ความอ่อนแอ ทุกคนมีสิทธิ์รู้สึก'],
+  ['👑','เป็นผู้นำ','ผู้นำที่ดีวัดกันที่หัวใจและการลงมือทำ'],
+  ['👶','เลี้ยงลูก','ลูกเป็นของทั้งพ่อและแม่ การดูแลจึงเป็นเรื่องของทั้งคู่'],
+  ['🚚','ขับรถบรรทุก','ใครมีใบขับขี่และใจรัก ก็ขับได้'],
+  ['💄','แต่งหน้า แต่งตัว','การดูแลตัวเองให้มั่นใจเป็นเรื่องของทุกคน'],
+  ['⚽','เล่นฟุตบอล','กีฬาไม่มีเพศ มีแต่คนที่รักจะเล่น'],
+  ['🩺','เป็นพยาบาล','อาชีพที่ดูแลผู้อื่น ต้องการคนที่ใส่ใจ ไม่ว่าเพศไหน'],
+  ['⚙️','เป็นวิศวกร','ความฝันและความสามารถ ไม่ควรถูกจำกัดด้วยเพศ'],
+  ['🧽','ล้างจาน ทำงานบ้าน','บ้านเป็นของทุกคน งานบ้านก็เป็นของทุกคน'],
+  ['💼','หาเงินเลี้ยงครอบครัว','ครอบครัวคือทีมเดียวกัน ช่วยกันได้ทุกคน'],
+  ['🩷','ชอบสีชมพู','สีเป็นแค่สี ใครชอบสีไหนก็ได้'],
+  ['💪','เข้มแข็ง','ความเข้มแข็งมีหลายแบบ และทุกคนมีได้'],
+  ['🕊️','อ่อนโยน','ความอ่อนโยนคือพลัง ไม่ใช่จุดอ่อน'],
+  ['💳','จ่ายค่าอาหาร','ใครสะดวกก็จ่าย หรือจะช่วยกันจ่ายก็ได้'],
+  ['✈️','เป็นนักบิน','ท้องฟ้าเปิดกว้างสำหรับทุกคน'],
+  ['🩰','เต้นบัลเลต์','ศิลปะเป็นของทุกคนที่รักมัน'],
+];
+const N=12, AN={m:'ชาย',f:'หญิง',a:'ใครก็ได้'};
+const ASK=[
+  'เคยไหมที่คุณรู้สึกว่าตัวเองต้องฝืนทำบางสิ่ง (เช่น ต้องเข้มแข็งตลอดเวลา หรือต้องเรียบร้อยอ่อนหวานเสมอ) เพียงเพราะสังคมคาดหวังตามเพศของคุณ?',
+  'คำพูดไหน หรือประโยคใดที่เกี่ยวกับเพศ ที่คุณไม่อยากได้ยินอีกแล้ว?',
+  'ทำไมงานบ้านหรือการดูแลคนในครอบครัว ถึงมักถูกมองว่าเป็น “หน้าที่หลัก” ของผู้หญิง ทั้งที่เป็นเรื่องของทุกคนในบ้าน?',
+];
+const $=id=>document.getElementById(id);
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+
+// phase: idle → count → ask → reveal → (idle) … → done
+const fresh=()=>({order:shuffle(WORDS.map((_,i)=>i)).slice(0,N),i:-1,phase:'idle',pick:null,t:{m:0,f:0,a:0},n:WORDS.length});
+let S=fresh();
+try{ const s=JSON.parse(localStorage.getItem('who-can')); if(s&&s.order&&s.n===WORDS.length){ S=s; if(S.phase==='count') S.phase='ask'; } }catch(e){}
+const save=()=>{try{localStorage.setItem('who-can',JSON.stringify(S))}catch(e){}};
+
+let cd=null;
+function render(){
+  const done=S.phase==='done', w=S.i>=0?WORDS[S.order[S.i]]:null;
+  const played=S.phase==='reveal'||done?S.i+1:Math.max(S.i,0);
+  $('rNo').textContent=S.i>=0?`รอบที่ ${Math.min(S.i+1,N)} / ${N}`:'รอบที่ —';
+  $('rLeft').textContent=`เหลือ ${N-played} คำ`;
+  $('tM').textContent=S.t.m; $('tF').textContent=S.t.f; $('tA').textContent=S.t.a;
+  $('ans').hidden=S.phase!=='ask';
+  const st=$('stage');
+  if(S.phase==='idle'&&S.i<0) st.innerHTML='<div class="emoji">🤔</div><div class="hint">เห็นคำแล้วนึกถึงใครเป็นคนแรก?<br>ตอบตามความรู้สึกแรก ไม่มีคำตอบผิด</div>';
+  else if(done) st.innerHTML='<div class="emoji">🎉</div><div class="word">ครบทุกคำแล้ว!</div><div class="hint">กด “สรุป” เพื่อดูผลและคำถามสะกิดใจ</div>';
+  else if(S.phase==='count'||S.phase==='ask') st.innerHTML=`<div class="emoji">${w[0]}</div><div class="word">${w[1]}</div><div class="hint" id="hint">${S.phase==='ask'?'✋ ชูมือ! ส่วนใหญ่ในห้องตอบว่า…':''}</div>`;
+  else if(S.phase==='reveal') st.innerHTML=`<div class="reveal"><div class="emoji" style="font-size:clamp(36px,8vmin,100px)">${w[0]}</div><div class="any">${w[1]} — ใครก็ได้! ✨</div><div class="think">${w[2]}</div><div class="first">ความรู้สึกแรกของห้องเรา: ${AN[S.pick]}</div></div>`;
+  const nx=$('bNext');
+  nx.hidden=S.phase==='ask'||S.phase==='count';
+  nx.textContent=done?'🏁 ดูสรุป':S.i<0?'▶ เริ่ม':S.i+1>=N?'🏁 ครบแล้ว — ดูสรุป':'คำต่อไป →';
+  save();
+}
+
+function next(){
+  if(S.phase==='count'||S.phase==='ask') return;
+  if(S.phase==='done'||(S.phase==='reveal'&&S.i+1>=N)){ S.phase='done'; render(); openOv('end'); return; }
+  S.i++; S.pick=null; S.phase='count'; render();
+  let n=3; const h=()=>{ const el=$('hint'); if(!el) return; if(n>0){ el.innerHTML=`<span class="count" style="font-size:1.6em">${n}</span>`; n--; cd=setTimeout(h,800); } else { S.phase='ask'; render(); } };
+  h();
+}
+function answer(a){ if(S.phase!=='ask') return; S.pick=a; S.t[a]++; S.phase='reveal'; render(); }
+
+// overlays: slides
+const QUOTE=`<div class="who">คำกล่าวของอาจารย์อิเคดะ</div>
+<blockquote>“เป้าหมายด้านความเสมอภาคทางเพศ คือ การที่ทุกคนร่วมมือกันในการแผ่ขยายหนทางที่ทุกผู้คน ไม่ว่าชายหรือหญิงได้รับความเคารพในศักดิ์ศรีและสามารถเปล่งประกายในแบบของตนเอง”</blockquote>
+<cite>(ข้อเสนอสันติภาพฯ ค.ศ.2017 “ความสามัคคีอันยิ่งใหญ่ของยุวชนคือระฆังย่ำรุ่งแห่งความหวัง”)</cite>`;
+const SUM=`<div class="who">สรุป</div>
+<blockquote>“ขอให้พวกเราทุกคนท้าทายในการปฏิวัติจิตใจตนเอง ลงมือทำอย่างเป็นรูปธรรม โดยเริ่มจากสภาพแวดล้อมในชีวิตประจำวัน เพื่อสร้างสังคมที่เคารพในความหลากหลายทางเพศ และเปิดโอกาสให้ทุกคนเปล่งประกายในแบบของตนเองไปด้วยกัน”</blockquote>
+<cite>(จากวารสารสู่ความสุข เดือนสิงหาคม 2569 หน้า 60)</cite>`;
+const HOW=`<div class="who">วิธีเล่น</div>
+<blockquote style="font-size:clamp(18px,3.6vmin,46px)">1. จอขึ้นคำ 1 คำ เช่น “ทำกับข้าว”<br>2. นับ 3-2-1 แล้วทุกคนชูมือตอบตามความรู้สึกแรก: ชาย / หญิง / ใครก็ได้<br>3. กดคำตอบที่คนส่วนใหญ่ในห้องเลือก<br>4. ดูเฉลยและชวนคุยสั้นๆ<br>5. เล่นครบ ${N} คำ แล้วดูสรุปและคำถามสะกิดใจ</blockquote>
+<cite>ไม่มีแพ้ชนะ และไม่มีคำตอบผิด — เป้าหมายคือสังเกตความคิดแรกของเราเอง</cite>`;
+const stats=()=>`<div class="who">ความรู้สึกแรกของห้องเรา</div>
+<div class="stats"><div style="color:var(--m)"><b>${S.t.m}</b>ชาย</div><div style="color:var(--f)"><b>${S.t.f}</b>หญิง</div><div style="color:var(--any)"><b>${S.t.a}</b>ใครก็ได้</div></div>
+<p class="note">${S.t.m+S.t.f?`มี ${S.t.m+S.t.f} คำ ที่เราเผลอนึกถึงเพศใดเพศหนึ่งก่อน<br>ไม่ใช่เรื่องผิด แต่ชวนสังเกตว่าความคิดแบบนี้มาจากไหน`:'ห้องเราตอบ “ใครก็ได้” ทุกคำ! แล้วในชีวิตจริง เราทำได้แบบนี้ไหม?'}</p>`;
+const ask=i=>`<div class="who">คำถามสะกิดใจ ${i+1} / ${ASK.length}</div><blockquote>${ASK[i]}</blockquote>`;
+const DECK={ end:()=>[stats(),...ASK.map((_,i)=>ask(i)),QUOTE,SUM], ask:()=>ASK.map((_,i)=>ask(i)), qt:()=>[QUOTE,SUM], how:()=>[HOW] };
+let deck=[], di=0;
+function showSlide(){ $('ovBox').innerHTML=deck[di]; $('ovBox').style.animation='none'; void $('ovBox').offsetWidth; $('ovBox').style.animation='';
+  $('ovPrev').hidden=di===0; $('ovNext').hidden=di>=deck.length-1; }
+function openOv(k){ deck=DECK[k](); di=0; showSlide(); $('ov').classList.add('show'); }
+
+function toggleFs(){
+  const d=document, el=d.documentElement, on=d.fullscreenElement||d.webkitFullscreenElement;
+  if(on) (d.exitFullscreen||d.webkitExitFullscreen).call(d);
+  else (el.requestFullscreen||el.webkitRequestFullscreen)?.call(el);
+}
+if(!(document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen)) $('bFs').style.display='none';
+
+$('bNext').onclick=next;
+$('ans').onclick=e=>{const a=e.target.closest('button')?.dataset.a; if(a) answer(a)};
+$('bEnd').onclick=()=>openOv('end');
+$('bAsk').onclick=()=>openOv('ask');
+$('bQt').onclick=()=>openOv('qt');
+$('bHow').onclick=()=>openOv('how');
+$('bFs').onclick=toggleFs;
+$('ovPrev').onclick=()=>{di--;showSlide()};
+$('ovNext').onclick=()=>{di++;showSlide()};
+$('ovClose').onclick=()=>$('ov').classList.remove('show');
+$('bReset').onclick=()=>{ if(S.i<0||confirm('เริ่มเกมใหม่ทั้งหมด?')){ clearTimeout(cd); S=fresh(); render(); } };
+
+render();
+</script>
+</body>
+</html>
