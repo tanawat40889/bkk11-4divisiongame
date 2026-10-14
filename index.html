@@ -25,7 +25,16 @@ h1 span{color:var(--gold)}
 header p{margin:6px 0 0;color:var(--mute);font-size:clamp(15px,2vw,20px)}
 .sec{color:var(--mute);font-size:15px;font-weight:600;letter-spacing:.5px;margin:32px 0 12px;display:flex;align-items:center;gap:12px}
 .sec::after{content:'';flex:1;height:1px;background:var(--line)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));gap:18px}
+.row{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 14px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.row .card{flex:0 0 min(86vw,420px);scroll-snap-align:start}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px}
+.bar input,.bar select{font:inherit;font-size:15px;color:var(--text);background:#10142a;border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.bar input{flex:1 1 220px;min-width:0}
+.bar input:focus,.bar select:focus{outline:2px solid var(--gold);outline-offset:1px}
+.seg{display:flex;gap:4px;background:#10142a;border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{font:inherit;font-size:14px;font-weight:600;border:0;border-radius:8px;padding:6px 12px;background:none;color:var(--mute);cursor:pointer}
+.seg button.on{background:var(--gold);color:#1a1a1a}
+.sec .n{font-weight:400;opacity:.7}
 .card{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:22px;
   padding:22px;color:inherit;text-decoration:none;transition:transform .15s,border-color .15s,box-shadow .15s}
 .card:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 10px 30px rgba(0,0,0,.35)}
@@ -54,11 +63,20 @@ ol{margin:0;padding-left:22px;line-height:1.65;font-size:15.5px;color:#d4d8f5}
     <h1>เกม <span>4 ฝ่าย</span> BKK11</h1>
     <p>รวมเกมกิจกรรมประจำเดือน เลือกเดือนเพื่อเข้าเล่น</p>
   </header>
+  <div class="bar">
+    <input id="q" type="search" placeholder="🔍 ค้นหาเกม เช่น XO, SDGs, ออนไลน์" />
+    <div class="seg" id="type">
+      <button data-v="all" class="on">ทั้งหมด</button><button data-v="month">ประจำเดือน</button><button data-v="sp">พิเศษ</button>
+    </div>
+    <select id="sort" aria-label="เรียงลำดับ">
+      <option value="new">ใหม่สุดก่อน</option><option value="old">เก่าสุดก่อน</option><option value="name">ชื่อ ก–ฮ</option>
+    </select>
+  </div>
   <div id="list"></div>
 </main>
 
 <script>
-// เพิ่มเกมใหม่ไว้ใน array นี้ (เรียงอัตโนมัติ ใหม่สุดอยู่บน)
+// เพิ่มเกมใหม่ไว้ใน array นี้ (ym = เดือนที่ทำ ใช้เรียงลำดับ)
 const GAMES = [
   {
     ym:'2026-10', icon:'🌈', title:'ใครทำก็ได้',
@@ -73,7 +91,7 @@ const GAMES = [
     tags:['ทั้งห้องเล่นด้วยกัน','12 คำ','SDGs 5','Reflect ต.ค.','7–10 นาที'],
   },
   {
-    special:true, path:'special-triamudom/', label:'✦ Special · กลุ่มเตรียมอุดม', icon:'💖', title:'XO พลเมืองโลก × เตรียมอุดม',
+    special:true, ym:'2026-10', path:'special-triamudom/', label:'✦ Special · กลุ่มเตรียมอุดม', icon:'💖', title:'XO พลเมืองโลก × เตรียมอุดม',
     desc:'XO พลเมืองโลกฉบับพิเศษสำหรับน้องๆ กลุ่มเตรียมอุดม (อุดมศึกษา) ธีมสีวัยรุ่น คัดคำถามมา 16 ข้อ',
     steps:[
       'แบ่งเป็น 2 ทีม คือ ทีม X กับทีม O (หรือใช้โหมดออนไลน์ ทุกคนเล่นกับ “ความเฉยเมย”)',
@@ -113,13 +131,21 @@ const card=(g,latest)=>`
   <div class="go">เข้าเล่น →</div>
 </a>`;
 
-const gs=GAMES.filter(g=>!g.special).sort((a,b)=>b.ym.localeCompare(a.ym)), sp=GAMES.filter(g=>g.special);
-const [first,...rest]=gs;
-const $list=document.getElementById('list');
-$list.innerHTML = !first ? '<p class="empty">ยังไม่มีเกม</p>' :
-  '<div class="sec">เกมล่าสุด</div><div class="grid">'+card(first,true)+'</div>'
-  +(sp.length?'<div class="sec">เกมพิเศษ</div><div class="grid">'+sp.map(g=>card(g,false)).join('')+'</div>':'')
-  +(rest.length?'<div class="sec">เกมก่อนหน้า</div><div class="grid">'+rest.map(g=>card(g,false)).join('')+'</div>':'');
+const latestYm=GAMES.filter(g=>!g.special).map(g=>g.ym).sort().pop();
+const F={q:'',type:'all',sort:'new'};
+const $=id=>document.getElementById(id);
+const sorter={new:(a,b)=>b.ym.localeCompare(a.ym),old:(a,b)=>a.ym.localeCompare(b.ym),name:(a,b)=>a.title.localeCompare(b.title,'th')};
+const match=g=>{const q=F.q.trim().toLowerCase(); return !q||[g.title,g.desc,g.label||'',mLabel(g.ym),...g.tags,...g.steps].join(' ').toLowerCase().includes(q)};
+const sec=(t,list)=>list.length?`<div class="sec">${t} <span class="n">(${list.length})</span></div><div class="row">${list.map(g=>card(g,!g.special&&g.ym===latestYm)).join('')}</div>`:'';
+function render(){
+  const gs=GAMES.filter(match).sort(sorter[F.sort]);
+  const mo=F.type==='sp'?[]:gs.filter(g=>!g.special), sp=F.type==='month'?[]:gs.filter(g=>g.special);
+  $('list').innerHTML=(sec('เกมประจำเดือน',mo)+sec('เกมพิเศษ',sp))||'<p class="empty">ไม่พบเกมที่ค้นหา</p>';
+}
+$('q').oninput=e=>{F.q=e.target.value;render()};
+$('sort').onchange=e=>{F.sort=e.target.value;render()};
+$('type').onclick=e=>{const v=e.target.dataset.v; if(!v) return; F.type=v; [...$('type').children].forEach(x=>x.classList.toggle('on',x===e.target)); render()};
+render();
 </script>
 </body>
 </html>
