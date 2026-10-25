@@ -15,164 +15,102 @@
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
 :root{
-  --page:#2a0d15; --shell:#4a1722; --panel:#5c1f2c; --deep:#3a111b; --line:rgba(255,255,255,.08);
-  --text:#fff3f0; --mute:#e2adb2; --coral:#e9605a; --red:#c73a41; --cream:#fbf2c4; --violet:#8b6cff;
-  --r:28px;
+  --page:#2a0d15; --shell:#4a1722; --panel:#5c1f2c; --deep:#3a111b;
+  --text:#fff3f0; --mute:#e2adb2; --coral:#e9605a; --cream:#fbf2c4; --r:28px;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{background:var(--page)}
 body{margin:0;min-height:100vh;color:var(--text);font-family:'Prompt',sans-serif;
-  background:radial-gradient(80vmax 60vmax at 10% -10%,rgba(233,96,90,.22),transparent 60%),radial-gradient(70vmax 60vmax at 110% 110%,rgba(139,108,255,.14),transparent 60%),var(--page);
+  background:radial-gradient(80vmax 60vmax at 10% -10%,rgba(233,96,90,.2),transparent 60%),var(--page);
   padding:max(18px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(18px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))}
 a{color:inherit;text-decoration:none}
-button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button,select,input{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--cream);outline-offset:2px}
 
-.shell{max-width:1440px;margin:0 auto;background:var(--shell);border-radius:44px;padding:22px;display:grid;grid-template-columns:76px minmax(0,1fr);gap:22px;
-  box-shadow:0 40px 90px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.05)}
-.rail{background:var(--deep);border-radius:var(--r);padding:18px 0;display:flex;flex-direction:column;align-items:center;gap:10px;position:sticky;top:22px;height:calc(100vh - 80px);max-height:820px}
-.rail .logo{width:48px;height:48px;border-radius:16px;margin-bottom:18px;background:#fff1e0 center/86% no-repeat url(icons/icon-192.png)}
-.nav{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-size:22px;opacity:.55;transition:.2s}
-.nav:hover{opacity:1;background:rgba(255,255,255,.06)}
-.nav.on{opacity:1;background:rgba(233,96,90,.18);box-shadow:0 0 0 1px rgba(233,96,90,.35)}
-.rail .sp{flex:1}
-.rail .plus{width:48px;height:48px;border-radius:16px;border:2px dashed rgba(233,96,90,.55);display:grid;place-items:center}
-.rail .plus span{width:32px;height:32px;border-radius:50%;background:var(--coral);display:grid;place-items:center;font-size:20px;font-weight:700}
+.shell{max-width:1240px;margin:0 auto;background:var(--shell);border-radius:40px;padding:22px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:22px;
+  box-shadow:0 40px 90px rgba(0,0,0,.45)}
 
-main{min-width:0;display:grid;grid-template-columns:minmax(0,1.75fr) minmax(300px,1fr);gap:22px;align-content:start}
-.top{grid-column:1/-1;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.brand{height:clamp(46px,5vw,64px);width:auto;filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
-.hello{font-size:clamp(22px,2.6vw,32px);font-weight:500;color:#ff8a82;margin:0;flex:1 1 auto;white-space:nowrap}
+/* filter rail */
+.rail{background:var(--deep);border-radius:var(--r);padding:22px 16px;display:flex;flex-direction:column;gap:22px;align-self:start;position:sticky;top:22px}
+.brand{width:100%;max-width:190px;height:auto;filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
+.group{display:flex;flex-direction:column;gap:6px}
+.label{font-size:13px;color:var(--mute);margin:0 0 4px 10px}
+.opt{display:flex;justify-content:space-between;align-items:center;border:0;border-radius:14px;padding:11px 14px;background:none;color:var(--mute);font-size:16px;cursor:pointer;text-align:left;transition:.15s}
+.opt:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.opt.on{background:var(--coral);color:#fff;font-weight:600}
+.opt span{font-size:13px;opacity:.8}
+select{width:100%;border:0;border-radius:14px;padding:11px 14px;background:var(--panel);font-size:15px}
+
+/* main */
+main{min-width:0;display:flex;flex-direction:column;gap:26px}
+.top{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hello{margin:0;flex:1 1 auto;font-size:clamp(22px,2.6vw,30px);font-weight:500;color:#ff8a82}
 .hello b{color:#fff;font-weight:700}
-.search{flex:0 1 420px;display:flex;align-items:center;gap:10px;background:var(--deep);border-radius:99px;padding:0 18px;height:50px;min-width:0}
-.search input{flex:1;min-width:0;background:none;border:0;color:var(--text);font:inherit;font-size:16px;outline:none}
+.search{flex:0 1 380px;display:flex;align-items:center;gap:10px;background:var(--deep);border-radius:99px;padding:0 18px;height:50px;min-width:0}
+.search input{flex:1;min-width:0;background:none;border:0;font-size:16px;outline:none}
 .search input::placeholder{color:var(--mute)}
-.round{width:50px;height:50px;border-radius:50%;background:var(--deep);display:grid;place-items:center;font-size:20px;position:relative}
-.round .dot{position:absolute;top:9px;right:10px;width:10px;height:10px;border-radius:50%;background:var(--coral);box-shadow:0 0 0 3px var(--deep)}
 
-/* hero */
-.hero{position:relative;border-radius:var(--r);overflow:hidden;min-height:400px;padding:34px 36px;display:flex;flex-direction:column;gap:14px;
-  background:var(--art,linear-gradient(120deg,var(--coral),var(--red)));isolation:isolate}
-.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(60,10,20,.55) 0%,rgba(60,10,20,.2) 55%,transparent 80%);z-index:-1}
-.hero .art{position:absolute;right:-10px;bottom:-40px;font-size:clamp(170px,20vw,300px);line-height:1;z-index:-1;filter:drop-shadow(0 30px 40px rgba(0,0,0,.35));transform:rotate(-8deg);transition:transform .5s}
-.hero:hover .art{transform:rotate(-2deg) scale(1.04)}
-.pills{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.pill{background:var(--cream);color:#3a1a10;font-weight:600;font-size:15px;border-radius:99px;padding:8px 18px}
-.pill.ghost{background:rgba(0,0,0,.28);color:#fff}
-.hero h1{margin:4px 0 0;font-size:clamp(34px,4.4vw,58px);font-weight:800;line-height:1.08;max-width:12em;text-shadow:0 2px 20px rgba(0,0,0,.25)}
+.hero{position:relative;border-radius:var(--r);overflow:hidden;min-height:380px;padding:34px 36px;display:flex;flex-direction:column;gap:14px;background:var(--art);isolation:isolate}
+.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(55,8,18,.6) 0%,rgba(55,8,18,.2) 55%,transparent 80%);z-index:-1}
+.hero .art{position:absolute;right:-10px;bottom:-40px;font-size:clamp(170px,20vw,280px);line-height:1;z-index:-1;transform:rotate(-8deg);filter:drop-shadow(0 30px 40px rgba(0,0,0,.35))}
+.pill{align-self:flex-start;background:var(--cream);color:#3a1a10;font-weight:600;font-size:15px;border-radius:99px;padding:7px 16px}
+.hero h1{margin:0;font-size:clamp(34px,4.4vw,56px);font-weight:800;line-height:1.08}
 .hero .desc{margin:0;max-width:30em;font-size:15.5px;line-height:1.6;color:#ffe9e5}
-.hero ol{margin:0;padding-left:20px;max-width:32em;font-size:14.5px;line-height:1.6;color:#ffe2dc}
-.hero .row2{margin-top:auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.play{display:inline-flex;align-items:center;gap:10px;background:#fff;color:#2a0d15;font-weight:700;font-size:17px;border-radius:99px;padding:12px 24px 12px 14px;box-shadow:0 12px 30px rgba(0,0,0,.25);transition:transform .15s}
+.hero ol{margin:0;padding-left:20px;max-width:32em;font-size:14.5px;line-height:1.65;color:#ffe2dc}
+.play{margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:10px;background:#fff;color:#2a0d15;font-weight:700;font-size:17px;border-radius:99px;padding:12px 24px 12px 14px;box-shadow:0 12px 30px rgba(0,0,0,.25);transition:transform .15s}
 .play:hover{transform:translateY(-2px)}
 .play i{width:32px;height:32px;border-radius:50%;background:var(--coral);color:#fff;display:grid;place-items:center;font-style:normal;font-size:13px}
-.dots{position:absolute;top:22px;right:28px;display:flex;gap:6px}
-.dots button{width:22px;height:5px;border-radius:9px;background:rgba(255,255,255,.3);transition:.25s}
-.dots button.on{width:44px;background:var(--cream)}
 
-/* side list */
-.side{display:flex;flex-direction:column;gap:16px}
-.item{display:flex;align-items:center;gap:14px;background:var(--panel);border-radius:22px;padding:12px 18px 12px 12px;transition:.2s;text-align:left;width:100%}
-.item:hover,.item.on{background:#6a2533;box-shadow:inset 0 0 0 1px rgba(233,96,90,.4)}
-.tile{flex:0 0 66px;height:66px;border-radius:18px;display:grid;place-items:center;font-size:34px;background:var(--art)}
-.item .t{flex:1;min-width:0;font-weight:500;font-size:16px;line-height:1.35}
-.item .t small{display:block;color:var(--mute);font-size:14px;font-weight:400}
-.item .chev{color:var(--mute);font-size:20px}
-
-/* sections */
-.head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:6px 4px 14px}
-.head h2{margin:0;font-size:24px;font-weight:600}
-.head h2 span{color:var(--mute);font-weight:400;font-size:17px}
-.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.seg{display:flex;gap:4px;background:var(--deep);border-radius:99px;padding:4px}
-.seg button{font-size:14px;font-weight:500;border-radius:99px;padding:7px 14px;color:var(--mute)}
-.seg button.on{background:var(--coral);color:#fff}
-select{font:inherit;font-size:14px;color:var(--text);background:var(--deep);border:0;border-radius:99px;padding:9px 14px}
-.strip{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 4px 16px;scrollbar-width:thin;scrollbar-color:var(--panel) transparent}
-.card{flex:0 0 min(78vw,300px);height:330px;scroll-snap-align:start;border-radius:var(--r);position:relative;overflow:hidden;padding:22px;display:flex;flex-direction:column;justify-content:flex-end;
-  background:var(--art);isolation:isolate;transition:transform .2s,box-shadow .2s;text-align:left}
-.card::before{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(30,6,12,.88) 0%,rgba(30,6,12,.25) 55%,transparent 80%);z-index:-1}
-.card .art{position:absolute;top:18px;right:-14px;font-size:150px;line-height:1;z-index:-2;transform:rotate(10deg);opacity:.95;transition:transform .4s}
-.card:hover{transform:translateY(-4px) rotate(-1deg);box-shadow:0 24px 40px rgba(0,0,0,.35)}
+h2{margin:0 0 14px 4px;font-size:22px;font-weight:600}
+h2 span{color:var(--mute);font-weight:400;font-size:16px}
+.strip{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 4px 16px;scrollbar-width:thin;scrollbar-color:var(--panel) transparent}
+.card{flex:0 0 min(78vw,290px);height:320px;scroll-snap-align:start;border-radius:var(--r);position:relative;overflow:hidden;padding:22px;display:flex;flex-direction:column;justify-content:flex-end;background:var(--art);isolation:isolate;transition:transform .2s,box-shadow .2s}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(30,6,12,.9) 0%,rgba(30,6,12,.25) 55%,transparent 80%);z-index:-1}
+.card .art{position:absolute;top:16px;right:-14px;font-size:140px;line-height:1;z-index:-2;transform:rotate(10deg);transition:transform .4s}
+.card:hover{transform:translateY(-4px);box-shadow:0 24px 40px rgba(0,0,0,.35)}
 .card:hover .art{transform:rotate(0) scale(1.06)}
-.card.on{box-shadow:0 0 0 3px var(--cream)}
-.card .cta{position:absolute;top:18px;left:18px;width:48px;height:48px;border-radius:50%;background:var(--coral);display:grid;place-items:center;font-size:15px;box-shadow:0 8px 20px rgba(0,0,0,.3)}
 .card .m{font-size:13px;color:var(--cream);font-weight:500}
-.card h3{margin:4px 0 6px;font-size:22px;font-weight:700;line-height:1.2}
+.card h3{margin:4px 0 6px;font-size:21px;font-weight:700;line-height:1.2}
 .card p{margin:0;font-size:13.5px;line-height:1.5;color:#f4d6d3;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.card .new{position:absolute;top:24px;right:18px;background:var(--cream);color:#3a1a10;font-size:12px;font-weight:700;border-radius:99px;padding:4px 10px}
-.empty{color:var(--mute);padding:40px 4px}
+.empty{color:var(--mute);padding:30px 4px}
 
-/* stats */
-.stats{background:linear-gradient(170deg,var(--panel) 0%,var(--deep) 100%);border-radius:var(--r);padding:26px;display:flex;flex-direction:column;align-items:center;gap:22px}
-.ring{position:relative;width:min(260px,70vw);aspect-ratio:1;display:grid;place-items:center}
-.blob{position:absolute;inset:0;border-radius:42% 58% 63% 37%/45% 40% 60% 55%;background:conic-gradient(from 200deg,var(--coral),var(--cream),var(--violet),var(--red),var(--coral));filter:blur(2px);animation:morph 9s ease-in-out infinite}
-.blob.b2{inset:6%;opacity:.55;filter:blur(14px);animation-duration:13s;animation-direction:reverse}
-@keyframes morph{0%,100%{border-radius:42% 58% 63% 37%/45% 40% 60% 55%;transform:rotate(0)}50%{border-radius:58% 42% 40% 60%/55% 60% 40% 45%;transform:rotate(25deg)}}
-.core{position:relative;width:72%;aspect-ratio:1;border-radius:50%;background:#3a111b;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 0 40px rgba(0,0,0,.4);display:grid;place-items:center;text-align:center}
-.core small{display:block;color:var(--mute);font-size:14px}
-.core b{font-size:clamp(46px,5vw,62px);font-weight:700;line-height:1.1}
-.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%}
-.kpi{text-align:center}
-.kpi i{width:62px;height:62px;margin:0 auto 8px;border-radius:50%;display:grid;place-items:center;font-size:26px;font-style:normal}
-.kpi b{display:block;font-size:22px;font-weight:700}
-.kpi span{color:var(--mute);font-size:13px}
-
-.col{min-width:0}
-@media (max-width:1100px){ main{grid-template-columns:1fr} .side{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))} }
-@media (max-width:760px){
+@media (max-width:820px){
   body{padding-left:10px;padding-right:10px}
   .shell{grid-template-columns:1fr;padding:14px;border-radius:30px}
-  .rail{position:static;height:auto;flex-direction:row;justify-content:space-between;padding:8px;border-radius:22px}
-  .rail .logo{margin:0} .rail .sp,.rail .plus{display:none}
-  .hello{white-space:normal} .search{flex-basis:100%;order:3}
-  .hero{min-height:460px;padding:26px 22px} .hero .art{font-size:180px;opacity:.6}
+  .rail{position:static;padding:16px;gap:14px}
+  .brand{max-width:150px}
+  .group{flex-direction:row;flex-wrap:wrap} .label{display:none}
+  .opt{flex:1 1 auto;justify-content:center;gap:6px;padding:9px 12px;font-size:15px}
+  .search{flex-basis:100%}
+  .hero{min-height:440px;padding:26px 22px} .hero .art{font-size:170px;opacity:.55}
 }
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <div class="shell">
-  <nav class="rail" aria-label="เมนู">
-    <a class="logo" href="./" aria-label="หน้าแรก"></a>
-    <button class="nav on" data-v="all" title="ทั้งหมด">🏠</button>
-    <button class="nav" data-v="month" title="เกมประจำเดือน">🎮</button>
-    <button class="nav" data-v="sp" title="เกมพิเศษ">🎁</button>
-    <button class="nav" id="focusQ" title="ค้นหา">🔍</button>
-    <div class="sp"></div>
-    <a class="plus" href="#games" title="ดูเกมทั้งหมด"><span>+</span></a>
-  </nav>
+  <aside class="rail">
+    <img class="brand" src="icons/bkk11-logo.png" alt="BKK11 รวมภาคกรุงเทพ" width="360" height="141" />
+    <div class="group" id="type">
+      <p class="label">ประเภท</p>
+      <button class="opt on" data-v="all">ทั้งหมด <span></span></button>
+      <button class="opt" data-v="month">ประจำเดือน <span></span></button>
+      <button class="opt" data-v="sp">พิเศษ <span></span></button>
+    </div>
+    <div class="group">
+      <p class="label">เรียงลำดับ</p>
+      <select id="sort" aria-label="เรียงลำดับ">
+        <option value="new">ใหม่สุดก่อน</option><option value="old">เก่าสุดก่อน</option><option value="name">ชื่อ ก–ฮ</option>
+      </select>
+    </div>
+  </aside>
 
   <main>
     <div class="top">
-      <img class="brand" src="icons/bkk11-logo.png" alt="BKK11 รวมภาคกรุงเทพ" width="360" height="141" />
       <h1 class="hello" id="hello"></h1>
       <label class="search"><span aria-hidden="true">🔍</span><input id="q" type="search" placeholder="ค้นหาเกม เช่น XO, SDGs, ออนไลน์" /></label>
-      <span class="round" title="เกมทั้งหมด">🎲<span class="dot"></span></span>
     </div>
-
-    <section class="col">
-      <div class="hero" id="hero"></div>
-    </section>
-
-    <aside class="side" id="side"></aside>
-
-    <section class="col" id="games">
-      <div class="head">
-        <h2 id="secTitle"></h2>
-        <div class="tools">
-          <div class="seg" id="type">
-            <button data-v="all" class="on">ทั้งหมด</button><button data-v="month">ประจำเดือน</button><button data-v="sp">พิเศษ</button>
-          </div>
-          <select id="sort" aria-label="เรียงลำดับ">
-            <option value="new">ใหม่สุดก่อน</option><option value="old">เก่าสุดก่อน</option><option value="name">ชื่อ ก–ฮ</option>
-          </select>
-        </div>
-      </div>
-      <div id="list"></div>
-    </section>
-
-    <aside class="stats" id="stats"></aside>
+    <section class="hero" id="hero"></section>
+    <section><h2 id="secTitle"></h2><div id="list"></div></section>
   </main>
 </div>
 
@@ -217,7 +155,6 @@ const GAMES = [
     tags:['2 ทีม / ออนไลน์','28 คำถาม','พลเมืองโลก','ปฏิบัติศรัทธา','คำกล่าว อ.อิเคดะ'],
   },
 ];
-
 const TH=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 const mLabel=ym=>{const [y,m]=ym.split('-').map(Number);return TH[m-1]+' '+(y+543)};
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -225,99 +162,47 @@ const $=id=>document.getElementById(id);
 const href=g=>g.path||g.ym+'/';
 const sub=g=>g.special?g.label:mLabel(g.ym);
 
-const latestYm=GAMES.filter(g=>!g.special).map(g=>g.ym).sort().pop();
-const isNew=g=>!g.special&&g.ym===latestYm;
 const F={q:'',type:'all',sort:'new'};
 const sorter={new:(a,b)=>b.ym.localeCompare(a.ym)||(a.special?1:-1),old:(a,b)=>a.ym.localeCompare(b.ym),name:(a,b)=>a.title.localeCompare(b.title,'th')};
 const match=g=>{const q=F.q.trim().toLowerCase(); return !q||[g.title,g.desc,g.label||'',mLabel(g.ym),...g.tags,...g.steps].join(' ').toLowerCase().includes(q)};
 const byType=g=>F.type==='all'||(F.type==='sp')===!!g.special;
+// featured = newest monthly game; shown only on the unfiltered default view
+const FEAT=GAMES.filter(g=>!g.special).sort(sorter.new)[0];
 
-// hero carousel = all games, newest first; monthly before special
-const ORDER=[...GAMES].sort(sorter.new);
-let cur=0, timer=null;
-
-function hello(){
-  const h=new Date().getHours();
-  const t=h<12?'สวัสดีตอนเช้า':h<17?'สวัสดีตอนบ่าย':h<20?'สวัสดีตอนเย็น':'สวัสดีตอนค่ำ';
-  $('hello').innerHTML=`${t}, <b>BKK11</b> 👋`;
-}
-
-function hero(){
-  const g=ORDER[cur];
-  const el=$('hero');
-  el.style.setProperty('--art',g.art);
-  el.innerHTML=`
-    <div class="dots">${ORDER.map((_,i)=>`<button aria-label="เกมที่ ${i+1}" data-i="${i}" class="${i===cur?'on':''}"></button>`).join('')}</div>
-    <span class="art" aria-hidden="true">${g.icon}</span>
-    <div class="pills"><span class="pill">${isNew(g)?'🔥 ล่าสุด':g.special?'✦ Special':'📅 เกมก่อนหน้า'}</span><span class="pill ghost">${esc(sub(g))}</span></div>
-    <h1>${esc(g.title)}</h1>
-    <p class="desc">${esc(g.desc)}</p>
-    <ol>${g.steps.slice(0,4).map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
-    <div class="row2">
-      <a class="play" href="${href(g)}"><i>▶</i>เข้าเล่น</a>
-      ${g.tags.slice(0,3).map(t=>`<span class="pill ghost">${esc(t)}</span>`).join('')}
-    </div>`;
-  document.querySelectorAll('[data-g]').forEach(x=>x.classList.toggle('on',+x.dataset.g===GAMES.indexOf(g)));
-}
-function go(i,user){ cur=(i+ORDER.length)%ORDER.length; hero(); if(user) restart(); }
-function restart(){ clearInterval(timer); if(!matchMedia('(prefers-reduced-motion:reduce)').matches) timer=setInterval(()=>go(cur+1),7000); }
-const pick=gi=>go(ORDER.indexOf(GAMES[gi]),true);
-
-function side(){
-  $('side').innerHTML=ORDER.map(g=>`
-    <button class="item" data-g="${GAMES.indexOf(g)}">
-      <span class="tile" style="--art:${g.art}">${g.icon}</span>
-      <span class="t">${esc(g.title)}<small>${esc(sub(g))}</small></span>
-      <span class="chev">›</span>
-    </button>`).join('');
-}
-
-function list(){
-  const gs=GAMES.filter(g=>match(g)&&byType(g)).sort(sorter[F.sort]);
-  $('secTitle').innerHTML=`${F.type==='sp'?'เกมพิเศษ':F.type==='month'?'เกมประจำเดือน':'เกมทั้งหมด'} <span>(${gs.length})</span>`;
+function render(){
+  const browsing=F.q.trim()||F.type!=='all';
+  const hero=$('hero');
+  hero.hidden=browsing||!FEAT;
+  if(!hero.hidden){
+    hero.style.setProperty('--art',FEAT.art);
+    hero.innerHTML=`<span class="art" aria-hidden="true">${FEAT.icon}</span>
+      <span class="pill">🔥 เกมเดือน${esc(mLabel(FEAT.ym))}</span>
+      <h1>${esc(FEAT.title)}</h1>
+      <p class="desc">${esc(FEAT.desc)}</p>
+      <ol>${FEAT.steps.slice(0,4).map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
+      <a class="play" href="${href(FEAT)}"><i>▶</i>เข้าเล่น</a>`;
+  }
+  const gs=GAMES.filter(g=>match(g)&&byType(g)&&(browsing||g!==FEAT)).sort(sorter[F.sort]);
+  $('secTitle').innerHTML=browsing?`ผลลัพธ์ <span>(${gs.length})</span>`:'เกมอื่นๆ';
+  $('secTitle').hidden=!gs.length&&!browsing;
   $('list').innerHTML=gs.length?`<div class="strip">${gs.map(g=>`
-    <a class="card" href="${href(g)}" data-g="${GAMES.indexOf(g)}" style="--art:${g.art}">
+    <a class="card" href="${href(g)}" style="--art:${g.art}">
       <span class="art" aria-hidden="true">${g.icon}</span>
-      <span class="cta">▶</span>
-      ${isNew(g)?'<span class="new">ใหม่</span>':''}
       <span class="m">${esc(sub(g))}</span>
       <h3>${esc(g.title)}</h3>
       <p>${esc(g.desc)}</p>
-    </a>`).join('')}</div>`:'<p class="empty">ไม่พบเกมที่ค้นหา</p>';
-  document.querySelectorAll('.item').forEach(x=>x.hidden=!match(GAMES[+x.dataset.g])||!byType(GAMES[+x.dataset.g]));
-  hero();
+    </a>`).join('')}</div>`:browsing?'<p class="empty">ไม่พบเกมที่ค้นหา</p>':'';
 }
 
-function stats(){
-  const mo=GAMES.filter(g=>!g.special).length, sp=GAMES.length-mo;
-  const months=new Set(GAMES.map(g=>g.ym)).size;
-  $('stats').innerHTML=`
-    <div class="head" style="width:100%;margin:0"><h2>สถิติของเรา</h2><span style="color:var(--mute)">→</span></div>
-    <div class="ring"><div class="blob"></div><div class="blob b2"></div>
-      <div class="core"><div><small>เกมทั้งหมด</small><b>${GAMES.length}</b></div></div></div>
-    <div class="kpis">
-      <div class="kpi"><i style="background:var(--red)">🎮</i><b>${mo}</b><span>ประจำเดือน</span></div>
-      <div class="kpi"><i style="background:var(--cream);color:#3a1a10">🎁</i><b>${sp}</b><span>พิเศษ</span></div>
-      <div class="kpi"><i style="background:var(--violet)">📅</i><b>${months}</b><span>เดือน</span></div>
-    </div>`;
-}
+const count={all:GAMES.length,month:GAMES.filter(g=>!g.special).length,sp:GAMES.filter(g=>g.special).length};
+document.querySelectorAll('#type .opt').forEach(b=>b.querySelector('span').textContent=count[b.dataset.v]);
+$('type').onclick=e=>{const b=e.target.closest('.opt'); if(!b) return; F.type=b.dataset.v; document.querySelectorAll('#type .opt').forEach(x=>x.classList.toggle('on',x===b)); render()};
+$('sort').onchange=e=>{F.sort=e.target.value;render()};
+$('q').oninput=e=>{F.q=e.target.value;render()};
 
-function setType(v){
-  F.type=v;
-  document.querySelectorAll('#type button, .nav[data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
-  list();
-}
-
-$('hero').onclick=e=>{const d=e.target.closest('[data-i]'); if(d) go(+d.dataset.i,true)};
-$('side').onclick=e=>{const b=e.target.closest('[data-g]'); if(b) pick(+b.dataset.g)};
-$('q').oninput=e=>{F.q=e.target.value;list()};
-$('sort').onchange=e=>{F.sort=e.target.value;list()};
-$('type').onclick=e=>{const v=e.target.dataset.v; if(v) setType(v)};
-document.querySelectorAll('.nav[data-v]').forEach(b=>b.onclick=()=>{setType(b.dataset.v); $('games').scrollIntoView({behavior:'smooth'})});
-$('focusQ').onclick=()=>{$('q').focus(); scrollTo({top:0,behavior:'smooth'})};
-$('hero').onmouseenter=()=>clearInterval(timer); $('hero').onmouseleave=restart;
-
-hello(); side(); stats(); list(); restart();
+const h=new Date().getHours();
+$('hello').innerHTML=`${h<12?'สวัสดีตอนเช้า':h<17?'สวัสดีตอนบ่าย':h<20?'สวัสดีตอนเย็น':'สวัสดีตอนค่ำ'}, <b>BKK11</b>`;
+render();
 </script>
 </body>
 </html>
