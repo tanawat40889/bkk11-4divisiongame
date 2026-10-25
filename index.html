@@ -41,6 +41,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 
 main{min-width:0;display:grid;grid-template-columns:minmax(0,1.75fr) minmax(300px,1fr);gap:22px;align-content:start}
 .top{grid-column:1/-1;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{height:clamp(46px,5vw,64px);width:auto;filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
 .hello{font-size:clamp(22px,2.6vw,32px);font-weight:500;color:#ff8a82;margin:0;flex:1 1 auto;white-space:nowrap}
 .hello b{color:#fff;font-weight:700}
 .search{flex:0 1 420px;display:flex;align-items:center;gap:10px;background:var(--deep);border-radius:99px;padding:0 18px;height:50px;min-width:0}
@@ -144,6 +145,7 @@ select{font:inherit;font-size:14px;color:var(--text);background:var(--deep);bord
 
   <main>
     <div class="top">
+      <img class="brand" src="icons/bkk11-logo.png" alt="BKK11 รวมภาคกรุงเทพ" width="360" height="141" />
       <h1 class="hello" id="hello"></h1>
       <label class="search"><span aria-hidden="true">🔍</span><input id="q" type="search" placeholder="ค้นหาเกม เช่น XO, SDGs, ออนไลน์" /></label>
       <span class="round" title="เกมทั้งหมด">🎲<span class="dot"></span></span>
