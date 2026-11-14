@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="ทางแยก" />
+<meta name="theme-color" content="#120e16" />
+<link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-32.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192.png" />
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png" />
+<title>ทางแยก</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;800&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --text:#fff8ee; --mute:#d9cfd8; --gold:#ffcf6b; --good:#7be0a6; --bad:#ff7a66;
+  --glass:rgba(18,13,22,.74); --line:rgba(255,255,255,.14);
+  --g:clamp(8px,1.6vmin,18px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;overflow:hidden;background:#120e16}
+body{height:100dvh;color:var(--text);font-family:'Prompt',sans-serif;position:relative}
+button{font-family:inherit;color:inherit;cursor:pointer;border:0;background:none}
+
+/* scene */
+#scene{position:absolute;inset:0;width:100%;height:100%;display:block}
+#scene *{transition:fill 1.8s ease,stop-color 1.8s ease,opacity 1.8s ease}
+.wall rect{transition:opacity .5s ease,transform .8s ease!important}
+.bird{animation:fly 14s linear infinite}
+.bird:nth-child(2){animation-duration:18s;animation-delay:-6s}
+.bird:nth-child(3){animation-duration:22s;animation-delay:-11s}
+@keyframes fly{from{transform:translateX(-200px)}to{transform:translateX(1800px)}}
+.lantern{animation:rise 9s ease-in-out infinite}
+.lantern:nth-child(2n){animation-duration:12s;animation-delay:-4s}
+.lantern:nth-child(3n){animation-duration:10s;animation-delay:-7s}
+@keyframes rise{0%{transform:translateY(40px)}50%{transform:translateY(-20px)}100%{transform:translateY(40px)}}
+.puff{animation:puff 6s ease-in infinite;transform-box:fill-box;transform-origin:center}
+.puff:nth-child(2){animation-delay:-2s}.puff:nth-child(3){animation-delay:-4s}
+@keyframes puff{0%{transform:translateY(0) scale(.6);opacity:.9}100%{transform:translateY(-220px) scale(2.4);opacity:0}}
+#ash{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 2s;
+  background-image:radial-gradient(2px 2px at 20% 30%,#cfc8c0 50%,transparent 51%),radial-gradient(2px 2px at 70% 10%,#cfc8c0 50%,transparent 51%),
+  radial-gradient(1.5px 1.5px at 40% 60%,#bdb6ae 50%,transparent 51%),radial-gradient(2px 2px at 85% 50%,#cfc8c0 50%,transparent 51%),
+  radial-gradient(1.5px 1.5px at 55% 85%,#bdb6ae 50%,transparent 51%),radial-gradient(2px 2px at 10% 75%,#cfc8c0 50%,transparent 51%);
+  background-size:300px 300px;animation:ash 12s linear infinite}
+@keyframes ash{from{background-position:0 0}to{background-position:60px 300px}}
+#rain{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 2s;
+  background-image:repeating-linear-gradient(105deg,transparent 0 22px,rgba(200,210,225,.35) 22px 24px,transparent 24px 60px);background-size:120px 240px;animation:rain .5s linear infinite}
+@keyframes rain{from{background-position:0 0}to{background-position:-30px 240px}}
+#hwall{transform-box:fill-box;transform-origin:50% 100%;transition:transform 1.8s ease,fill 1.8s ease!important}
+.eps{display:grid;grid-template-columns:1fr 1fr;gap:var(--g);margin:0 0 clamp(12px,2vmin,20px)}
+.ep{text-align:left;padding:clamp(14px,2.2vmin,22px);border-radius:16px;background:rgba(255,255,255,.07);border:1px solid var(--line);transition:transform .2s,border-color .2s}
+.ep:hover{transform:translateY(-3px);border-color:rgba(255,207,107,.6)}
+.ep small{display:block;color:var(--gold);font-size:clamp(12px,1.6vmin,16px)}
+.ep b{display:block;font-size:clamp(20px,3.2vmin,34px);margin:.1em 0 .2em}
+.ep span{display:block;color:var(--mute);font-size:clamp(13px,1.8vmin,18px);line-height:1.45}
+#veil{position:absolute;inset:0;pointer-events:none;background:linear-gradient(to bottom,rgba(10,8,12,.35),transparent 22%,transparent 45%,rgba(10,8,12,.55))}
+
+/* top bar */
+.top{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:var(--g);
+  padding:calc(var(--g) + env(safe-area-inset-top)) calc(var(--g)*1.4) var(--g);z-index:3}
+.home{font-size:clamp(13px,1.7vmin,17px);color:var(--text);text-decoration:none;padding:.45em .9em;border-radius:99px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.dots{display:flex;gap:6px;margin:0 auto}
+.dots i{width:clamp(18px,3vmin,34px);height:6px;border-radius:9px;background:rgba(255,255,255,.22);transition:background .4s}
+.dots i.on{background:var(--gold)}
+.dots i.done{background:rgba(255,207,107,.55)}
+.clock{display:flex;align-items:center;gap:.6em;padding:.35em .9em .35em .4em;border-radius:99px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.clock svg{width:clamp(30px,4.6vmin,48px);height:auto}
+.clock b{display:block;font-size:clamp(14px,2vmin,20px);line-height:1.1}
+.clock small{display:block;font-size:clamp(10px,1.35vmin,13px);color:var(--mute)}
+#hand{transition:transform 1.8s cubic-bezier(.3,1.4,.5,1);transform-origin:24px 24px}
+.ib{width:clamp(34px,4.6vmin,46px);aspect-ratio:1;border-radius:50%;background:var(--glass);border:1px solid var(--line);font-size:clamp(14px,2vmin,19px);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.ib:disabled{opacity:.35;cursor:default}
+
+/* card */
+.card{position:absolute;left:50%;bottom:calc(var(--g)*1.4 + env(safe-area-inset-bottom));transform:translateX(-50%);
+  width:min(1040px,94vw);max-height:62dvh;overflow:auto;z-index:2;
+  background:var(--glass);border:1px solid var(--line);border-radius:clamp(16px,2.4vmin,26px);
+  backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);
+  padding:clamp(16px,3vmin,34px);box-shadow:0 20px 60px rgba(0,0,0,.45);animation:up .5s ease}
+@keyframes up{from{opacity:0;transform:translate(-50%,16px)}to{opacity:1;transform:translate(-50%,0)}}
+.eyebrow{font-size:clamp(12px,1.6vmin,16px);color:var(--gold);letter-spacing:.04em;font-weight:500}
+h1{margin:.1em 0 .25em;font-size:clamp(34px,7vmin,76px);line-height:1;font-weight:800}
+h2{margin:.15em 0 .4em;font-size:clamp(22px,3.6vmin,40px);line-height:1.2;font-weight:800}
+.lede{font-size:clamp(15px,2.3vmin,24px);line-height:1.55;margin:0 0 .8em;color:var(--text)}
+.story{font-size:clamp(17px,2.8vmin,30px);line-height:1.5;margin:0 0 clamp(12px,2vmin,22px)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--g);margin:0 0 clamp(12px,2vmin,22px);padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;font-size:clamp(13px,1.9vmin,19px);line-height:1.45;color:var(--mute);padding:.8em 1em;border-radius:14px;background:rgba(255,255,255,.06)}
+.steps li::before{content:counter(s);display:inline-grid;place-items:center;width:1.6em;height:1.6em;border-radius:50%;background:var(--gold);color:#2a1a08;font-weight:800;margin-right:.5em}
+.row{display:flex;align-items:center;gap:var(--g);flex-wrap:wrap}
+.hint{font-size:clamp(12px,1.6vmin,16px);color:var(--mute)}
+.go{margin-left:auto;padding:.7em 1.5em;border-radius:99px;background:var(--gold);color:#2a1a08;font-weight:800;font-size:clamp(15px,2.2vmin,22px)}
+.go:hover{filter:brightness(1.06)}
+.ghost{padding:.65em 1.2em;border-radius:99px;border:1px solid var(--line);font-size:clamp(14px,1.9vmin,19px)}
+
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--g)}
+.ch{display:flex;gap:.7em;align-items:flex-start;text-align:left;padding:clamp(12px,2vmin,20px);border-radius:16px;
+  background:rgba(255,255,255,.07);border:1px solid var(--line);font-size:clamp(15px,2.2vmin,23px);line-height:1.4;transition:transform .2s,background .2s,border-color .2s}
+.ch:hover{transform:translateY(-3px);background:rgba(255,255,255,.12);border-color:rgba(255,207,107,.6)}
+.ch b{flex:none;display:grid;place-items:center;width:1.8em;height:1.8em;border-radius:50%;background:rgba(255,207,107,.16);color:var(--gold);font-weight:800}
+
+.picked{display:flex;gap:.7em;align-items:center;font-size:clamp(14px,1.9vmin,19px);color:var(--mute);margin-bottom:.5em}
+.picked b{color:var(--text)}
+.res{font-size:clamp(18px,2.9vmin,31px);line-height:1.5;margin:0 0 clamp(12px,2vmin,22px)}
+.chip{display:inline-flex;align-items:center;gap:.4em;padding:.35em .9em;border-radius:99px;font-weight:600;font-size:clamp(13px,1.8vmin,18px)}
+.chip.up{background:rgba(255,122,102,.16);color:var(--bad)}
+.chip.dn{background:rgba(123,224,166,.15);color:var(--good)}
+
+.path{display:grid;gap:6px;margin:0 0 clamp(12px,2vmin,20px)}
+.path div{display:grid;grid-template-columns:auto 1fr auto;gap:.8em;align-items:center;padding:.5em .9em;border-radius:12px;background:rgba(255,255,255,.06);font-size:clamp(13px,1.85vmin,19px)}
+.path em{font-style:normal;color:var(--mute);white-space:nowrap}
+.path .k{width:.7em;height:.7em;border-radius:50%}
+.qs{margin:0 0 clamp(12px,2vmin,20px);padding:0;list-style:none;display:grid;gap:var(--g)}
+.qs li{font-size:clamp(17px,2.7vmin,29px);line-height:1.45;padding:.6em .9em;border-left:4px solid var(--gold);background:rgba(255,255,255,.05);border-radius:0 12px 12px 0}
+blockquote{margin:0 0 .8em;font-size:clamp(16px,2.5vmin,27px);line-height:1.55}
+blockquote cite{display:block;margin-top:.35em;font-style:normal;font-size:clamp(12px,1.6vmin,16px);color:var(--gold)}
+.src{font-size:clamp(11px,1.4vmin,14px);color:var(--mute)}
+
+.shake{animation:shake .5s}
+@keyframes shake{20%{transform:translate(-50%,0) translateX(-8px)}40%{transform:translate(-50%,0) translateX(7px)}60%{transform:translate(-50%,0) translateX(-4px)}80%{transform:translate(-50%,0) translateX(2px)}}
+
+@media (max-width:720px),(max-aspect-ratio:3/4){
+  .choices,.steps,.eps{grid-template-columns:1fr}
+  .card{max-height:70dvh}
+  .clock small{display:none}
+}
+</style>
+</head>
+<body>
+
+<svg id="scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop id="s1" offset="0" /><stop id="s2" offset="1" />
+    </linearGradient>
+    <radialGradient id="glow"><stop offset="0" stop-color="#fff6c8" stop-opacity=".9"/><stop offset="1" stop-color="#fff6c8" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)" />
+  <g id="sun"><circle cx="1190" cy="150" r="160" fill="url(#glow)"/><circle id="sunc" cx="1190" cy="150" r="62"/></g>
+  <g id="lanterns">
+    <g class="lantern"><rect x="300" y="120" width="16" height="22" rx="5" fill="#ffb84d"/></g>
+    <g class="lantern"><rect x="520" y="70" width="14" height="19" rx="5" fill="#ffc861"/></g>
+    <g class="lantern"><rect x="980" y="110" width="16" height="22" rx="5" fill="#ffb84d"/></g>
+    <g class="lantern"><rect x="1400" y="90" width="12" height="17" rx="4" fill="#ffd27a"/></g>
+    <g class="lantern"><rect x="760" y="50" width="14" height="19" rx="5" fill="#ffc861"/></g>
+    <g class="lantern"><rect x="140" y="60" width="12" height="17" rx="4" fill="#ffd27a"/></g>
+  </g>
+  <g id="birds" fill="none" stroke="#3b2f3a" stroke-width="4" stroke-linecap="round">
+    <path class="bird" d="M100,170 q14,-12 28,0 q14,-12 28,0"/>
+    <path class="bird" d="M60,120 q10,-9 20,0 q10,-9 20,0"/>
+    <path class="bird" d="M0,210 q12,-10 24,0 q12,-10 24,0"/>
+  </g>
+  <g id="clouds">
+    <ellipse cx="300" cy="140" rx="260" ry="60"/><ellipse cx="520" cy="110" rx="200" ry="55"/>
+    <ellipse cx="1050" cy="120" rx="280" ry="64"/><ellipse cx="1350" cy="160" rx="240" ry="58"/>
+    <ellipse cx="780" cy="190" rx="300" ry="50"/>
+  </g>
+  <path id="mts" d="M0,330 L150,240 L300,300 L470,215 L640,290 L800,230 L960,290 L1120,205 L1300,290 L1450,235 L1600,290 L1600,340 L0,340Z"/>
+  <g id="g1">
+    <rect class="gnd" y="330" width="1600" height="570"/>
+    <rect class="walk" y="540" width="1600" height="40"/>
+    <g id="hTree"><rect x="788" y="300" width="24" height="230" fill="#5a3f2e"/>
+      <circle class="leaf" cx="800" cy="280" r="118"/><circle class="leaf" cx="715" cy="315" r="70"/><circle class="leaf" cx="885" cy="315" r="70"/>
+      <g id="mangos" fill="#ffc83d"><ellipse cx="760" cy="300" rx="9" ry="12"/><ellipse cx="830" cy="250" rx="9" ry="12"/><ellipse cx="860" cy="330" rx="9" ry="12"/><ellipse cx="730" cy="340" rx="9" ry="12"/><ellipse cx="800" cy="320" rx="9" ry="12"/></g></g>
+    <g id="hHouses"></g>
+    <g id="flw"></g>
+    <g id="picket"></g>
+    <rect id="hwall" x="684" y="250" width="232" height="290" rx="4"/>
+    <g id="sign"><rect x="735" y="400" width="130" height="50" rx="6" fill="#c0392b"/><text x="800" y="434" text-anchor="middle" fill="#fff" font-size="24" font-weight="800" font-family="Prompt">ห้ามเข้า!</text></g>
+    <g id="hPeople"><circle cx="645" cy="452" r="14" fill="#ffcf6b"/><rect x="630" y="468" width="30" height="62" rx="10" fill="#ffcf6b"/>
+      <circle cx="955" cy="452" r="14" fill="#8fd3ff"/><rect x="940" y="468" width="30" height="62" rx="10" fill="#8fd3ff"/>
+      <g fill="#3b2f3a"><ellipse cx="780" cy="486" rx="18" ry="11"/><circle cx="798" cy="476" r="9"/><path d="M792,469 l3,-8 l4,7z M800,468 l4,-8 l3,8z"/></g></g>
+  </g>
+  <g id="g2">
+  <rect id="ground" y="318" width="1600" height="582"/>
+  <g id="fields">
+    <rect x="30" y="338" width="300" height="9" rx="3"/><rect x="40" y="352" width="290" height="9" rx="3"/><rect x="50" y="366" width="280" height="9" rx="3"/>
+    <rect x="1270" y="338" width="300" height="9" rx="3"/><rect x="1270" y="352" width="290" height="9" rx="3"/><rect x="1270" y="366" width="280" height="9" rx="3"/>
+  </g>
+  <path class="hill" d="M0,470 Q330,400 700,470 L700,900 L0,900Z"/>
+  <path class="hill" d="M900,470 Q1270,400 1600,470 L1600,900 L900,900Z"/>
+  <path id="river" d="M786,318 L814,318 L1080,900 L520,900Z"/>
+  <g id="wall"></g>
+
+  <g id="towns"></g>
+  <g id="trees"></g>
+
+  <g id="bridge">
+    <path class="br" d="M700,428 Q800,388 900,428 L900,438 Q800,400 700,438Z"/>
+    <rect class="br" x="700" y="410" width="62" height="12" rx="3"/>
+    <rect class="br" x="838" y="410" width="62" height="12" rx="3"/>
+    <rect id="mid" class="br" x="760" y="410" width="80" height="12" rx="3"/>
+    <g id="rail" stroke-width="3"><line x1="704" y1="398" x2="896" y2="398"/><line x1="720" y1="398" x2="720" y2="410"/><line x1="760" y1="398" x2="760" y2="410"/><line x1="800" y1="398" x2="800" y2="410"/><line x1="840" y1="398" x2="840" y2="410"/><line x1="880" y1="398" x2="880" y2="410"/></g>
+    <g id="people"><circle cx="772" cy="394" r="6" fill="#ffcf6b"/><circle cx="792" cy="392" r="6" fill="#ff8f7a"/><circle cx="822" cy="394" r="6" fill="#8fd3ff"/>
+      <rect x="767" y="400" width="10" height="10" rx="3" fill="#ffcf6b"/><rect x="787" y="398" width="10" height="12" rx="3" fill="#ff8f7a"/><rect x="817" y="400" width="10" height="10" rx="3" fill="#8fd3ff"/></g>
+    <g id="gate"><rect x="776" y="378" width="48" height="34" rx="3" fill="#c0392b"/><path d="M782,384 L818,406 M818,384 L782,406" stroke="#fff" stroke-width="4"/></g>
+  </g>
+  <g id="smoke" fill="#4a4448">
+    <g transform="translate(420,370)"><circle class="puff" r="22"/><circle class="puff" r="22"/><circle class="puff" r="22"/></g>
+    <g transform="translate(1180,360)"><circle class="puff" r="22"/><circle class="puff" r="22"/><circle class="puff" r="22"/></g>
+    <g transform="translate(600,380)"><circle class="puff" r="18"/><circle class="puff" r="18"/><circle class="puff" r="18"/></g>
+  </g>
+  </g>
+</svg>
+<div id="ash"></div>
+<div id="rain"></div>
+<div id="veil"></div>
+
+<div class="top">
+  <a class="home" href="../">← หน้าแรก</a>
+  <div class="dots" id="dots"></div>
+  <button class="ib" id="undo" title="ย้อนกลับ (Backspace)">↺</button>
+  <button class="ib" id="fs" title="เต็มจอ">⛶</button>
+  <div class="clock" title="นาฬิกาวันสิ้นโลก">
+    <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+      <circle cx="24" cy="5.5" r="2.2" fill="#ff7a66"/><line id="hand" x1="24" y1="24" x2="24" y2="8" stroke="#ffcf6b" stroke-width="3" stroke-linecap="round"/><circle cx="24" cy="24" r="2.5" fill="#ffcf6b"/></svg>
+    <div><b id="mins"></b><small id="tomid">ถึงเที่ยงคืน</small></div>
+  </div>
+</div>
+
+<div class="card" id="card"></div>
+
+<script>
+const EPS=[
+ {name:'สองเมือง', no:'ตอนที่ 1', key:'city',
+  lede:'เรื่องสมมุติของ “เมืองตะวัน” กับ “เมืองจันทร์” สองเมืองที่ใช้แม่น้ำสายเดียวกัน ทั้งห้องคือชาวเมืองตะวัน ทุกการตัดสินใจจะเปลี่ยนโลกของทั้งสองเมือง',
+  card:'เมืองตะวันกับเมืองจันทร์ที่ใช้แม่น้ำสายเดียวกัน',
+  st:[
+  {title:'ข่าวลือเรื่องเขื่อน',
+   calm:'หน้าแล้งปีนี้น้ำในแม่น้ำลดลงมาก มีข่าวลือว่าเมืองจันทร์จะสร้างเขื่อนกักน้ำไว้ใช้เอง ชาวเมืองตะวันเริ่มกังวล',
+   ch:[
+    {k:'talk',t:'ส่งตัวแทนข้ามสะพานไปถามตรงๆ',r:'เมืองจันทร์บอกว่าแค่จะขุดบ่อพักน้ำ และยินดีให้เราไปดูด้วยกัน ข่าวลือจบลงที่วงน้ำชา'},
+    {k:'force',t:'รีบสร้างเขื่อนของเราเองก่อน',r:'เมืองจันทร์เห็นเราสร้างเขื่อนก่อน จึงเชื่อว่าข่าวลือเป็นเรื่องจริง และเริ่มสร้างเขื่อนบ้าง'},
+    {k:'wait',t:'เงียบไว้ รอดูท่าทีไปก่อน',r:'ไม่มีใครถาม ไม่มีใครตอบ ข่าวลือจึงโตขึ้นทุกวันในวงกาแฟ'},
+   ]},
+  {title:'ปลาในแม่น้ำ',
+   calm:'ชาวประมงสองเมืองมาจับปลาจุดเดียวกันกลางแม่น้ำ แล้วเถียงกันว่าน่านน้ำนี้เป็นของใคร',
+   tense:'ชาวประมงเมืองตะวันถูกไล่ออกจากกลางแม่น้ำ มีคนอัดคลิปพร้อมข้อความโกรธแค้น แชร์ไปทั่วเมือง',
+   ch:[
+    {k:'wait',t:'บอกชาวประมงของเราให้ถอยไปจับที่อื่น',r:'ปัญหาเงียบไปชั่วคราว แต่ชาวประมงของเรารู้สึกว่าไม่มีใครฟังพวกเขาเลย'},
+    {k:'talk',t:'ชวนชาวประมงทั้งสองฝั่งมาตกลงเขตจับปลาร่วมกัน',r:'ทั้งสองฝ่ายได้เล่าความลำบากของตัวเอง แล้วตกลงผลัดกันจับปลาคนละวัน'},
+    {k:'force',t:'ส่งเรือลาดตระเวนไปคุ้มกันชาวประมง',r:'เมืองจันทร์ส่งเรือมาเผชิญหน้า กลางแม่น้ำมีเรือของสองเมืองจอดประจันกันทุกวัน'},
+   ]},
+  {title:'คลิปลึกลับ',
+   calm:'มีคลิปในโซเชียลอ้างว่าเมืองจันทร์กำลังสะสมอาวุธ ยังไม่มีใครรู้ว่าจริงหรือไม่',
+   tense:'คลิปที่อ้างว่าเมืองจันทร์สะสมอาวุธถูกแชร์นับหมื่นครั้ง ผู้คนเริ่มเชื่อโดยไม่ตรวจสอบ',
+   ch:[
+    {k:'force',t:'เร่งสะสมอาวุธของเราบ้าง เผื่อไว้ก่อน',r:'เมืองจันทร์เห็นเราสะสมอาวุธจริงๆ คลิปปลอมจึงกลายเป็นความกลัวจริงของทั้งสองฝ่าย'},
+    {k:'wait',t:'แชร์ต่อ พร้อมเตือนให้ทุกคนระวังตัว',r:'ความกลัวแพร่เร็วกว่าความจริง ร้านค้าเริ่มไม่ขายของให้คนจากเมืองจันทร์'},
+    {k:'talk',t:'ตรวจสอบข้อเท็จจริง แล้วเชิญผู้นำเมืองจันทร์มาชี้แจงร่วมกัน',r:'พบว่าคลิปถูกตัดต่อ ผู้นำสองเมืองแถลงข่าวร่วมกัน ทุกคนโล่งใจ'},
+   ]},
+  {title:'นาข้าวเสียหาย',
+   calm:'โรคระบาดในนาข้าวทำให้ผลผลิตของเมืองจันทร์เสียหายเกือบหมด ชาวเมืองเริ่มขาดอาหาร',
+   tense:'โรคระบาดในนาข้าวทำให้เมืองจันทร์ขาดอาหาร แต่เพราะความระแวงที่สะสมมา พวกเขาไม่กล้าขอความช่วยเหลือจากเรา',
+   ch:[
+    {k:'talk',t:'แบ่งข้าว และช่วยกันดูแลนาข้าวทั้งสองฝั่ง',r:'ข้าวกระสอบแรกข้ามสะพานไป เด็กๆ เมืองจันทร์โบกมือให้ ความไว้ใจกลับมาทีละนิด'},
+    {k:'wait',t:'ปิดยุ้งฉาง ดูแลเมืองตัวเองก่อน',r:'เมืองจันทร์ผ่านหน้าหนาวไปอย่างยากลำบาก และรู้สึกว่าถูกเพื่อนบ้านทิ้ง'},
+    {k:'force',t:'ขายข้าวให้เมืองจันทร์ในราคาสามเท่า',r:'เราได้เงินเพิ่ม แต่ความหิวทำให้เมืองจันทร์โกรธแค้น และจดจำวันนี้ไว้'},
+   ]},
+  {title:'เหตุที่สะพาน',
+   calm:'วัยรุ่นสองเมืองทะเลาะกันบนสะพานจนมีคนบาดเจ็บเล็กน้อย ต่างฝ่ายต่างโทษกัน',
+   tense:'เกิดเหตุปะทะบนสะพาน มีคนบาดเจ็บหลายคน ทั้งสองเมืองต่างโทษว่าอีกฝ่ายเริ่มก่อน',
+   ch:[
+    {k:'wait',t:'ให้อีกฝ่ายขอโทษก่อน แล้วค่อยคุย',r:'ไม่มีฝ่ายไหนยอมขอโทษก่อน สะพานถูกปิดไม่มีกำหนด'},
+    {k:'force',t:'ตอบโต้ให้สาสม จะได้ไม่มีใครกล้าอีก',r:'การตอบโต้ทำให้อีกฝ่ายตอบโต้กลับหนักกว่าเดิม ความรุนแรงลุกลามไปทั้งสองฝั่ง'},
+    {k:'talk',t:'ตั้งทีมหาความจริงร่วมกัน และไปเยี่ยมผู้บาดเจ็บทั้งสองฝั่ง',r:'ความจริงคือเป็นการเข้าใจผิด ครอบครัวของผู้บาดเจ็บทั้งสองเมืองได้จับมือกัน'},
+   ]},
+  {title:'อาวุธที่ร้ายแรงที่สุด',
+   calm:'มีคนเสนอให้เมืองตะวันสร้าง “อาวุธที่ร้ายแรงที่สุด” ที่ทำลายได้ทั้งเมือง เพื่อให้ใครก็ไม่กล้าแตะเรา',
+   tense:'เมืองจันทร์ประกาศว่ากำลังสร้าง “อาวุธที่ร้ายแรงที่สุด” ที่ทำลายได้ทั้งเมือง หลายคนเรียกร้องให้เราสร้างบ้าง',
+   ch:[
+    {k:'force',t:'สร้าง แล้วประกาศขู่ให้อีกฝ่ายรู้',r:'นิ้วของทั้งสองฝ่ายวางอยู่บนปุ่ม ความผิดพลาดเพียงครั้งเดียวก็พอจะทำลายทุกอย่าง',x:10},
+    {k:'talk',t:'ไม่สร้าง และชวนเมืองจันทร์ทำสัญญาเลิกอาวุธร้ายแรงร่วมกัน',r:'สองเมืองลงนามสัญญากันบนสะพาน งบประมาณอาวุธถูกนำไปสร้างโรงเรียนและนาข้าว'},
+    {k:'wait',t:'สร้างเก็บไว้ แต่สัญญาว่าจะไม่ใช้',r:'อาวุธที่ “ไม่ใช้” ยังอยู่ ความระแวงก็ยังอยู่ และอีกฝ่ายก็สร้างเพิ่มขึ้นเรื่อยๆ'},
+   ]},
+  ],
+  ends:[
+   {max:20,icon:'🌉',title:'สะพานแห่งมิตรภาพ',txt:'สองเมืองจัดเทศกาลโคมลอยบนสะพานด้วยกัน ความขัดแย้งยังเกิดขึ้นได้เสมอ แต่ทั้งสองเมืองรู้แล้วว่าจะคลี่คลายมันด้วยการพูดคุย'},
+   {max:45,icon:'🕊️',title:'สันติภาพที่ต้องดูแล',txt:'ไม่มีสงคราม แต่ยังมีรอยร้าวบางจุด ความไว้ใจต้องค่อยๆ สร้างต่อไปทุกวัน'},
+   {max:75,icon:'🧱',title:'กำแพงแห่งความกลัว',txt:'ไม่มีใครโจมตีใคร แต่กำแพงสูงขึ้นทุกปี เงินที่ควรใช้ปลูกข้าวและสร้างโรงเรียนถูกใช้ไปกับอาวุธ ผู้คนทั้งสองฝั่งอยู่อย่างหวาดระแวง'},
+   {max:999,icon:'🌑',title:'เที่ยงคืน',txt:'ความผิดพลาดเพียงครั้งเดียวทำให้ทุกอย่างพังลง ควันดำบดบังดวงอาทิตย์ นาข้าวทั้งสองฝั่งปลูกไม่ขึ้น ผลกระทบลามไปถึงเมืองไกลๆ ที่ไม่เกี่ยวข้อง ไม่มีใครเป็นผู้ชนะ'},
+  ]},
+ {name:'บ้านติดกัน', no:'ตอนที่ 2', key:'home',
+  lede:'บ้านเราอยู่ติดกับบ้านป้าจันทร์มาหลายปี มีต้นมะม่วงต้นใหญ่อยู่ตรงแนวรั้ว ทั้งห้องคือคนในบ้านเรา ทุกการตัดสินใจจะเปลี่ยนชีวิตของทั้งสองบ้าน',
+  card:'เรื่องเล็กๆ ระหว่างบ้านเรากับบ้านป้าจันทร์',
+  st:[
+  {title:'ใบมะม่วง',
+   calm:'ต้นมะม่วงของป้าจันทร์ทิ้งใบร่วงลงมาเต็มลานบ้านเรา ทุกเช้าเราต้องกวาดจนเมื่อย',
+   ch:[
+    {k:'talk',t:'แวะไปคุยกับป้าดีๆ ชวนกันตัดแต่งกิ่ง',r:'ป้าขอโทษที่ไม่รู้มาก่อน ช่วยกันตัดกิ่งเสร็จ ป้ายังยกมะม่วงมาให้อีกตะกร้าใหญ่'},
+    {k:'force',t:'ตัดกิ่งที่ยื่นมาทิ้งเองเลย ไม่ต้องบอก',r:'ป้าจันทร์ตกใจที่ต้นไม้ที่ปลูกมา 20 ปีถูกตัดโดยไม่มีใครบอก ป้าเริ่มมองบ้านเราด้วยสายตาไม่ไว้ใจ'},
+    {k:'wait',t:'บ่นในใจ แล้วกวาดไปเงียบๆ',r:'ทุกเช้าที่กวาดใบไม้ ความหงุดหงิดก็สะสมเพิ่มขึ้นอีกนิด โดยที่ป้าไม่รู้อะไรเลย'},
+   ]},
+  {title:'เสียงเพลงตอนดึก',
+   calm:'หลานป้าจันทร์มาเยี่ยม ร้องคาราโอเกะถึงห้าทุ่ม แต่พรุ่งนี้เราต้องตื่นตีห้า',
+   tense:'บ้านป้าจันทร์ร้องคาราโอเกะถึงห้าทุ่ม ทั้งที่รู้ว่าเราไม่ค่อยพอใจกันอยู่ ราวกับตั้งใจแกล้ง',
+   ch:[
+    {k:'wait',t:'ทนเอา แต่ระบายลงกลุ่มไลน์หมู่บ้าน',r:'ข้อความถูกส่งต่อจนถึงป้าจันทร์ ป้ารู้สึกอับอายที่ถูกพูดถึงลับหลัง'},
+    {k:'talk',t:'เดินไปบอกดีๆ ว่าพรุ่งนี้ต้องตื่นเช้า ขอเบาเสียงหน่อย',r:'หลานป้ารีบขอโทษและปิดเพลงทันที แถมชวนเรามากินขนมด้วยกันวันหลัง'},
+    {k:'force',t:'เปิดเพลงแข่งให้ดังกว่า',r:'สองบ้านเปิดเพลงแข่งกันจนเที่ยงคืน ทั้งซอยนอนไม่หลับ และไม่มีใครยอมใคร'},
+   ]},
+  {title:'รถจอดขวาง',
+   calm:'เช้านี้มีรถมาจอดขวางหน้าบ้านจนเราออกไปทำงานไม่ได้ ไม่รู้ว่าเป็นรถของใคร',
+   tense:'เช้านี้มีรถมาจอดขวางหน้าบ้าน ทุกคนในบ้านเชื่อทันทีว่าต้องเป็นรถแขกของป้าจันทร์แน่ๆ',
+   ch:[
+    {k:'force',t:'เขียนข้อความด่าแปะกระจกรถ',r:'ปรากฏว่าเป็นรถคนส่งของ ไม่ใช่แขกของป้า แต่รูปข้อความนั้นถูกแชร์ไปทั่วซอยแล้ว'},
+    {k:'wait',t:'บ่นกันในบ้านว่าต้องเป็นแขกป้าแน่ๆ',r:'ไม่มีใครถามความจริง ความเชื่อว่าป้า “ไม่เกรงใจใคร” ฝังอยู่ในใจทุกคนในบ้าน'},
+    {k:'talk',t:'ถามป้าจันทร์ตรงๆ ว่ารู้ไหมว่าเป็นรถใคร',r:'ป้าก็ไม่รู้ แต่ช่วยโทรถามคนในซอยจนเจอเจ้าของรถ ปัญหาจบภายในสิบนาที'},
+   ]},
+  {title:'ป้าล้ม',
+   calm:'ป้าจันทร์หกล้มขาเจ็บ อยู่บ้านคนเดียว ลูกหลานอยู่ต่างจังหวัด',
+   tense:'ป้าจันทร์หกล้มขาเจ็บ อยู่บ้านคนเดียว แต่เพราะเรื่องที่ผ่านมา ป้าไม่กล้าขอให้เราช่วย',
+   ch:[
+    {k:'talk',t:'เอาข้าวไปให้ และช่วยพาไปหาหมอ',r:'ป้าน้ำตาซึม บอกว่าไม่คิดเลยว่าเพื่อนบ้านจะห่วงใยขนาดนี้'},
+    {k:'wait',t:'ไม่ใช่เรื่องของเรา ให้ลูกหลานเขาดูแลเอง',r:'ป้าผ่านสัปดาห์นั้นมาคนเดียว และรู้สึกเหมือนอยู่ข้างบ้านคนแปลกหน้า'},
+    {k:'force',t:'“สมน้ำหน้า ใครใช้ให้ทำตัวไม่ดีกับเรา”',r:'คำพูดนั้นลอยข้ามรั้วไปถึงหูป้า แผลในใจเจ็บกว่าขาที่เจ็บเสียอีก'},
+   ]},
+  {title:'แนวรั้ว',
+   calm:'แนวเขตที่ดินระหว่างสองบ้านไม่ชัดเจน มีคนแนะนำให้สร้างกำแพงสูงกั้นให้รู้เรื่องไปเลย',
+   tense:'ป้าจันทร์เริ่มก่อกำแพงกั้นเขต หลายคนในบ้านเราบอกว่าต้องสร้างให้สูงกว่า',
+   ch:[
+    {k:'force',t:'สร้างกำแพงให้สูงกว่า แล้วฟ้องเรื่องที่ดิน',r:'สองบ้านไม่มองหน้ากันอีกเลย คดีลากยาวหลายปี ลูกหลานทั้งสองบ้านโตมากับความเกลียดชัง',x:10},
+    {k:'talk',t:'ชวนป้ามาดูแนวเขตด้วยกัน แล้วปลูกรั้วต้นไม้เตี้ยๆ',r:'รั้วดอกไม้กลายเป็นที่ที่สองบ้านยืนคุยกันทุกเย็น'},
+    {k:'wait',t:'ต่างคนต่างทำ ไม่ยุ่งกัน',r:'กำแพงสูงขึ้นทีละนิด ไม่มีใครทะเลาะกัน แต่ก็ไม่มีใครทักทายกันอีกเลย'},
+   ]},
+  ],
+  ends:[
+   {max:20,icon:'🌼',title:'รั้วดอกไม้',txt:'สองบ้านแบ่งมะม่วง แบ่งกับข้าว และดูแลกันยามเจ็บป่วย มีเรื่องไม่เข้าใจกันบ้าง แต่ก็คุยกันได้เสมอ'},
+   {max:45,icon:'🙂',title:'เพื่อนบ้านที่ยังต้องดูแลกัน',txt:'ยังทักทายกันอยู่ แต่มีบางเรื่องที่ค้างคาใจ ความไว้ใจต้องค่อยๆ สร้างต่อไป'},
+   {max:75,icon:'🧱',title:'กำแพงข้างบ้าน',txt:'ไม่มีใครทะเลาะกันเสียงดัง แต่ก็ไม่มีใครมองหน้ากัน ข่าวลือและความระแวงอยู่เต็มซอย'},
+   {max:999,icon:'⛈️',title:'ศัตรูข้างบ้าน',txt:'สองบ้านกลายเป็นศัตรู ทั้งคดีความ คำด่าทอ และความเกลียดชังที่ส่งต่อไปถึงลูกหลาน ทั้งซอยไม่มีใครมีความสุข'},
+  ]},
+];
+const KC={talk:'#7be0a6',wait:'#ffcf6b',force:'#ff7a66'};
+const T0=20, KEY='crossroad2';
+const $=id=>document.getElementById(id);
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const fresh=()=>({ph:'intro',e:0,i:0,t:T0,picks:[],slide:0,end1:null});
+let S; try{S=JSON.parse(localStorage.getItem(KEY))||fresh()}catch{S=fresh()}
+const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
+const EP=()=>EPS[S.e], STG=()=>EP().st;
+const endOf=(e,t)=>EPS[e].ends.find(x=>t<=x.max);
+
+function delta(c,t){
+  let d={talk:-14,wait:8,force:18}[c.k]+(c.x||0);
+  if(c.k!=='talk'&&t>=55) d+=6;
+  if(c.k==='talk'&&t>=70) d=-9;
+  return d;
+}
+const tense=t=>t>=45;
+
+/* ---------- scene ---------- */
+const hex=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const mix=(a,b,f)=>{const x=hex(a),y=hex(b);return '#'+x.map((v,i)=>Math.round(v+(y[i]-v)*f).toString(16).padStart(2,'0')).join('')};
+function ramp(stops,k){
+  for(let i=1;i<stops.length;i++) if(k<=stops[i][0]){const [a,ca]=stops[i-1],[b,cb]=stops[i];return mix(ca,cb,(k-a)/(b-a))}
+  return stops[stops.length-1][1];
+}
+const P={
+  s1:[[0,'#5fb6ea'],[.4,'#d98a5b'],[.7,'#4b3646'],[1,'#26232a']],
+  s2:[[0,'#ffe7b0'],[.4,'#f6c27a'],[.7,'#7c5148'],[1,'#4d4542']],
+  sun:[[0,'#fff1a8'],[.5,'#ffb35c'],[1,'#a2554a']],
+  cloud:[[0,'#ffffff'],[.4,'#f3d6c4'],[.7,'#5d4d58'],[1,'#3a3538']],
+  mts:[[0,'#8fb7c9'],[.5,'#9a7f86'],[1,'#3e393d']],
+  ground:[[0,'#9bd17a'],[.45,'#b5b56a'],[.75,'#8a7556'],[1,'#57504a']],
+  hill:[[0,'#6fbf5f'],[.45,'#9a9a52'],[.75,'#6e5d46'],[1,'#3f3a37']],
+  field:[[0,'#f3d55b'],[.45,'#c9a84f'],[.75,'#7a6448'],[1,'#47413d']],
+  river:[[0,'#4fa9e0'],[.5,'#6c8a98'],[1,'#4a4a4c']],
+  wall:[[0,'#b9aea2'],[1,'#6a625c']],
+  walk:[[0,'#e6dccb'],[1,'#7a736c']],
+  roofL:[[0,'#e2624c'],[1,'#5b4a46']], roofR:[[0,'#5a8fd6'],[1,'#4a4c55']],
+  houseW:[[0,'#fff3dd'],[1,'#8a8580']],
+  win:[[0,'#ffd36b'],[.6,'#e9b65a'],[1,'#26232a']],
+  leaf:[[0,'#3f9e4d'],[.5,'#8a8a3e'],[1,'#5a4c3e']],
+  flw:[[0,'#ff7aa8'],[.5,'#c98a6a'],[1,'#5a4c3e']],
+  br:[[0,'#a0704a'],[1,'#5b4b40']],
+};
+function house(x,y,w,h,L){
+  const ww=w*.2,wh=h*.34;
+  return `<g><rect class="hw" x="${x}" y="${y-h}" width="${w}" height="${h}" rx="3"/>
+    <path class="${L?'rl':'rr'}" d="M${x-w*.06},${y-h+4} L${x+w/2},${y-h-w*.32} L${x+w*1.06},${y-h+4}Z"/>
+    ${[x+w*.1,x+w-w*.1-ww].map(wx=>`<rect class="win" x="${wx}" y="${y-h*.72}" width="${ww}" height="${wh}" rx="3"/><rect class="cur" x="${wx}" y="${y-h*.72}" width="${ww}" height="${wh}" rx="3"/>`).join('')}
+    <rect class="br" x="${x+w/2-w*.07}" y="${y-h*.55}" width="${w*.14}" height="${h*.55}" rx="3"/></g>`;
+}
+(function build(){
+  /* city */
+  const HOUSES=[[360,455,58],[430,442,66],[505,460,54],[570,446,62],[300,470,50],[620,474,46],
+                [960,446,62],[1030,460,54],[1095,442,66],[1170,455,58],[1240,470,50],[1000,476,46]];
+  const TREES=[[250,438],[660,430],[200,488],[690,500],[910,432],[1330,440],[1380,492],[930,505]];
+  let h='';
+  HOUSES.forEach(([x,y,w])=>{const L=x<800,hh=w*.75;
+    h+=`<g><rect class="hw" x="${x}" y="${y-hh}" width="${w}" height="${hh}" rx="3"/>
+      <path class="${L?'rl':'rr'}" d="M${x-6},${y-hh+2} L${x+w/2},${y-hh-w*.5} L${x+w+6},${y-hh+2}Z"/>
+      <rect class="win" x="${x+w*.2}" y="${y-hh*.7}" width="${w*.22}" height="${hh*.3}" rx="2"/>
+      <rect class="win" x="${x+w*.58}" y="${y-hh*.7}" width="${w*.22}" height="${hh*.3}" rx="2"/></g>`});
+  $('towns').innerHTML=h;
+  $('trees').innerHTML=TREES.map(([x,y])=>`<g><rect x="${x-4}" y="${y-10}" width="8" height="26" fill="#5a3f2e"/><circle class="leaf" cx="${x}" cy="${y-22}" r="22"/></g>`).join('');
+  let w='';
+  for(let side of[0,1]) for(let j=0;j<12;j++){
+    const y=330+j*48, f=(y-318)/582, x=side?814+266*f:786-266*f;
+    w+=`<rect data-j="${j}" x="${side?x+4:x-20}" y="${y-44}" width="16" height="50" rx="2"/>`;
+  }
+  $('wall').innerHTML=w;
+  /* neighbours */
+  $('hHouses').innerHTML=house(220,540,400,180,1)+house(980,540,400,180,0);
+  let f='';
+  for(let x=235;x<=605;x+=28) f+=`<circle class="fl" cx="${x}" cy="548" r="10"/>`;
+  for(let x=995;x<=1365;x+=28) f+=`<circle class="fl" cx="${x}" cy="548" r="10"/>`;
+  $('flw').innerHTML=f;
+  let pk='';
+  for(let x=690;x<=900;x+=22) pk+=`<rect class="br" x="${x}" y="496" width="12" height="44" rx="4"/>`;
+  $('picket').innerHTML=pk+`<rect class="br" x="686" y="510" width="228" height="8"/>`;
+})();
+function paint(t){
+  const k=clamp(t/100), set=(sel,key)=>document.querySelectorAll(sel).forEach(e=>e.style.fill=ramp(P[key],k)), home=EP().key==='home';
+  $('g1').style.display=home?'':'none'; $('g2').style.display=home?'none':'';
+  $('s1').style.stopColor=ramp(P.s1,k); $('s2').style.stopColor=ramp(P.s2,k);
+  $('sunc').style.fill=ramp(P.sun,k); $('sun').style.opacity=clamp(1-k*1.15);
+  set('#clouds ellipse','cloud'); $('clouds').style.opacity=.35+k*.6;
+  set('#mts','mts'); set('#ground','ground'); set('.gnd','ground'); set('.hill','hill'); set('#fields rect','field'); set('#river','river');
+  set('.hw','houseW'); set('.rl','roofL'); set('.rr','roofR'); set('.win','win'); set('.leaf','leaf'); set('.br','br'); set('.walk','walk'); set('.fl','flw');
+  document.querySelectorAll('#rail line').forEach(e=>e.style.stroke=ramp(P.br,k));
+  $('birds').style.opacity=clamp(1-k*2.2);
+  /* city */
+  const n=Math.round(clamp((k-.28)/.42)*12);
+  document.querySelectorAll('#wall rect').forEach(e=>{e.style.fill=ramp(P.wall,k);e.style.opacity=+e.dataset.j<n?1:0});
+  $('lanterns').style.opacity=home?0:clamp(1-k*4.5);
+  $('people').style.opacity=clamp(1-k*2.5);
+  $('gate').style.opacity=k>.42&&k<=.85?1:0;
+  $('mid').style.opacity=k>.85?0:1;
+  $('smoke').style.opacity=home?0:clamp((k-.6)*3);
+  $('ash').style.opacity=home?0:clamp((k-.78)*4.5);
+  /* neighbours */
+  $('hwall').style.fill=ramp(P.wall,k);
+  $('hwall').style.transform=`scaleY(${clamp((k-.25)/.5)})`;
+  $('sign').style.opacity=k>.6?1:0;
+  $('hPeople').style.opacity=clamp(1-k*2.5);
+  $('mangos').style.opacity=clamp(1-k*2);
+  $('flw').style.opacity=clamp(1.3-k);
+  document.querySelectorAll('.cur').forEach(e=>{e.style.fill='#5c4652';e.style.opacity=clamp((k-.35)*2.5)});
+  $('rain').style.opacity=home?clamp((k-.72)*4):0;
+  /* clock */
+  const m=Math.round(15*(1-k));
+  $('mins').textContent=m?`อีก ${m} นาที`:'เที่ยงคืน';
+  $('tomid').style.display=m?'':'none';
+  $('hand').style.transform=`rotate(${-m*6}deg)`;
+}
+
+/* ---------- ui ---------- */
+function dots(){
+  const n=STG().length, show=S.ph!=='intro';
+  const ci=S.ph==='alt'?S.alt.i:S.i, all=S.ph==='end'||(S.ph==='alt'&&ci>=STG().length);
+  $('dots').innerHTML=show?STG().map((_,j)=>`<i class="${all||j<ci?'done':j===ci&&S.ph!=='ep'?'on':''}"></i>`).join(''):'';
+  $('undo').disabled=S.ph==='intro'||S.ph==='ep'||(S.ph==='ask'&&S.i===0);
+}
+const nav=(N,last)=>`<div class="row">
+  ${S.slide>0?'<button class="ghost" onclick="slide(-1)">← ก่อนหน้า</button>':''}
+  <span class="hint">${S.slide+1} / ${N}</span>${S.slide<N-1?'<button class="go" onclick="slide(1)">ต่อไป →</button>':last}</div>`;
+function render(){
+  paint(S.ph==='alt'?altT(S.alt.k,S.alt.i+1):S.t); dots();
+  const c=$('card'); c.style.animation='none'; c.offsetHeight; c.style.animation='';
+  if(S.ph==='intro'){
+    c.innerHTML=`<div class="eyebrow">Reflect วิถีชีวิตพลเมืองโลก · พฤศจิกายน 2569</div>
+      <h1>ทางแยก</h1>
+      <p class="lede">เรื่องสมมุติ 2 ตอน ทั้งห้องช่วยกันเลือกทาง ยิ่งเลือกทางแห่งความกลัว ทุกอย่างยิ่งแย่ลง และเข็มนาฬิกายิ่งเข้าใกล้เที่ยงคืน</p>
+      <div class="eps">${EPS.map((e,j)=>`<button class="ep" onclick="openEp(${j})"><small>${e.no} · ${e.st.length} ฉาก</small><b>${e.name}</b><span>${e.card}</span></button>`).join('')}</div>
+      <p class="hint" style="margin:0">อ่านสถานการณ์ → ทุกคนชู 1 / 2 / 3 นิ้ว (Zoom พิมพ์ในแชต) → กดทางที่เสียงส่วนใหญ่เลือก แล้วดูผลที่ตามมา</p>`;
+  }else if(S.ph==='ep'){
+    c.innerHTML=`<div class="eyebrow">${EP().no} · ${STG().length} ฉาก</div><h1>${EP().name}</h1>
+      <p class="lede">${EP().lede}</p>
+      <div class="row"><button class="ghost" onclick="restart()">← เลือกตอน</button><button class="go" onclick="go()">เริ่มเรื่อง →</button></div>`;
+  }else if(S.ph==='ask'){
+    const st=STG()[S.i];
+    c.innerHTML=`<div class="eyebrow">${EP().no} · ฉากที่ ${S.i+1} / ${STG().length} · ${st.title}</div>
+      <p class="story">${tense(S.t)&&st.tense?st.tense:st.calm}</p>
+      <div class="choices">${st.ch.map((x,j)=>`<button class="ch" onclick="pick(${j})"><b>${j+1}</b><span>${x.t}</span></button>`).join('')}</div>`;
+  }else if(S.ph==='res'){
+    const p=S.picks[S.picks.length-1], x=STG()[p.s].ch[p.j];
+    c.innerHTML=`<div class="eyebrow">${EP().no} · ฉากที่ ${p.s+1} / ${STG().length} · ${STG()[p.s].title}</div>
+      <div class="picked">ห้องเลือก <b>${p.j+1}. ${x.t}</b></div>
+      <p class="res">${x.r}</p>
+      <div class="row"><span class="chip ${p.d>0?'up':'dn'}">${p.d>0?'▲ ความตึงเครียดเพิ่มขึ้น':'▼ ความตึงเครียดลดลง'}</span>
+        <button class="go" onclick="next()">${S.i<STG().length-1?'ฉากต่อไป →':'ดูตอนจบ →'}</button></div>`;
+  }else if(S.ph==='alt') altCard(c);
+  else endSlide(c);
+}
+/* what-if: replay the episode always taking one kind of choice */
+function altT(k,n){let t=T0;for(let i=0;i<Math.min(n,STG().length);i++){t=clamp(t+delta(STG()[i].ch.find(x=>x.k===k),t),0,100)}return t}
+const altKind=()=>EP().ends.indexOf(endOf(S.e,S.t))>=2?'talk':'force';
+const ALT={force:'ถ้าเลือกทางแห่งความกลัวทุกครั้ง',talk:'ถ้าเลือกคุยกันทุกครั้ง'};
+function whatIf(){S.alt={k:altKind(),i:0};S.ph='alt';save();render()}
+function altCard(c){
+  const {k,i}=S.alt, n=STG().length;
+  if(i>=n){
+    const e=endOf(S.e,altT(k,n)), mine=endOf(S.e,S.t);
+    c.innerHTML=`<div class="eyebrow">${ALT[k]} · ตอนจบ</div><h2>${e.icon} ${e.title}</h2><p class="res">${e.txt}</p>
+      <p class="hint" style="margin:0 0 1em">ส่วนห้องเราจบที่ ${mine.icon} ${mine.title} · ทุกทางแยกเริ่มจากการเลือกเล็กๆ ของเราเอง</p>
+      <div class="row"><button class="ghost" onclick="altStep(-1)">← ก่อนหน้า</button><button class="go" onclick="altBack()">กลับไปตอนจบของเรา →</button></div>`;
+    return;
+  }
+  const st=STG()[i], j=st.ch.findIndex(x=>x.k===k), x=st.ch[j], before=altT(k,i), d=delta(x,before);
+  c.innerHTML=`<div class="eyebrow">${ALT[k]} · ฉากที่ ${i+1} / ${n} · ${st.title}</div>
+    <p class="res">${x.r}</p>
+    <div class="row"><span class="chip ${d>0?'up':'dn'}">${d>0?'▲ ความตึงเครียดเพิ่มขึ้น':'▼ ความตึงเครียดลดลง'}</span>
+      <button class="ghost" style="margin-left:auto" onclick="altBack()">ข้าม</button>
+      <button class="go" style="margin-left:0" onclick="altStep(1)">${i<n-1?'ฉากต่อไป →':'ดูตอนจบ →'}</button></div>`;
+  if(d>0&&k==='force'){c.classList.remove('shake');void c.offsetWidth;c.classList.add('shake')}
+}
+function altStep(d){const n=STG().length;S.alt.i=clamp(S.alt.i+d,0,n);save();render()}
+function altBack(){S.ph='end';S.slide=0;delete S.alt;save();render()}
+function endSlide(c){
+  const e=endOf(S.e,S.t), first=S.e===0, N=NS(), sl=SL()[S.slide];
+  const last=first?'<button class="go" onclick="openEp(1)">ไปตอนที่ 2 →</button>':'<button class="go" onclick="restart()">เล่นใหม่ ↺</button>';
+  const legend=`<p class="hint" style="margin:0 0 1em"><span style="color:${KC.talk}">●</span> คุยกัน / แบ่งปัน &nbsp; <span style="color:${KC.wait}">●</span> เงียบ / เอาตัวรอด &nbsp; <span style="color:${KC.force}">●</span> ใช้กำลัง / เอาชนะ</p>`;
+  const e1=!first&&S.end1!=null?EPS[0].ends[S.end1]:null;
+  if(sl==='end') c.innerHTML=`<div class="eyebrow">${EP().no} · ตอนจบ</div><h2>${e.icon} ${e.title}</h2><p class="res">${e.txt}</p>
+    <p class="hint" style="margin:0 0 1em">${e1?`ตอนที่ 1 ${EPS[0].name} จบที่ ${e1.icon} ${e1.title} · `:''}นี่เป็นเพียงเรื่องสมมุติ แต่จุดเริ่มต้นแบบนี้เกิดขึ้นได้จริงในทุกครอบครัว ทุกชุมชน</p>
+    <button class="ghost" style="margin:0 0 1em;border-color:${KC[altKind()]};color:${KC[altKind()]}" onclick="whatIf()">${ALT[altKind()]} จะเกิดอะไรขึ้น? ▸</button>${nav(N,last)}`;
+  else if(sl==='path') c.innerHTML=`<div class="eyebrow">${EP().no} · เส้นทางของเรา</div>
+    <div class="path">${S.picks.map(p=>{const x=STG()[p.s].ch[p.j];return `<div><span class="k" style="background:${KC[x.k]}"></span><span>${x.t}</span><em>${STG()[p.s].title}</em></div>`}).join('')}</div>${legend}${nav(N,last)}`;
+  else if(sl==='bridge') c.innerHTML=`<div class="eyebrow">ก่อนไปตอนที่ 2</div>
+    <h2>จากสองเมือง สู่บ้านสองหลัง</h2>
+    <p class="res">เรื่องของสองเมืองอาจดูไกลตัว แต่ถ้าเป็นบ้านเรากับบ้านข้างๆ ล่ะ เราจะเลือกทางไหน?</p>
+    <p class="hint" style="margin:0 0 1em">ต้นตอของความขัดแย้งไม่ต่างกันเลย ไม่ว่าจะระหว่างประเทศหรือระหว่างเพื่อนบ้าน คือความกลัว ความระแวง และการไม่ยอมคุยกัน</p>${nav(N,last)}`;
+  else if(sl==='talk') c.innerHTML=`<div class="eyebrow">ชวนคุย</div>
+    <ul class="qs"><li>ถ้าเกิดสงครามขึ้น ใครบ้างที่จะได้รับผลกระทบ?</li><li>เราจะช่วยกันสร้างสังคมที่สงบสุขได้อย่างไร?</li></ul>
+    <p class="hint" style="margin:0 0 1em">สงครามหรือนิวเคลียร์ฟังดูเหมือนเรื่องไกลตัว แต่ต้นตอจริงๆ มาจากความกลัว ความระแวง และการไม่ยอมคุยกัน ทางออกไม่ได้อยู่ที่การเอาชนะ แต่เริ่มที่ “การเปิดใจฟัง”</p>${nav(N,last)}`;
+  else c.innerHTML=`<div class="eyebrow">คำกล่าว</div>
+    <blockquote>“เป็นที่แน่ชัดขึ้นทุกวันว่า อาวุธนิวเคลียร์ไม่สามารถใช้เป็นเครื่องมือในการบรรลุเป้าหมายเพื่อความมั่นคงได้ และแท้จริงแล้วยิ่งเวลาผ่านไป อาวุธนิวเคลียร์กลับยิ่งทำให้ความมั่นคงของมนุษย์เปราะบางขึ้น”<cite>อ.อิเคดะ สนทนากับมิคาอิล กอร์บาชอฟ</cite></blockquote>
+    <blockquote>“หากห่วงใยต่อความปลอดภัยมั่นคงของตนเองแล้ว ก่อนอื่นควรอธิษฐานให้เกิดความสงบสุขและความเป็นระเบียบเรียบร้อยทั่วแผ่นดินมิใช่หรือ”<cite>พระนิชิเร็นไดโชนิน</cite></blockquote>
+    <p class="src" style="margin:0 0 1em">ที่มา: วารสารสู่ความสุข เดือนกันยายน 2569 หน้า 55–57</p>${nav(N,last)}`;
+}
+function openEp(e){
+  if(S.ph==='end'&&S.e===0) S.end1=EPS[0].ends.indexOf(endOf(0,S.t));
+  S.e=e;S.ph='ep';S.i=0;S.t=T0;S.picks=[];S.slide=0;save();render();
+}
+function go(){S.ph='ask';save();render()}
+function pick(j){
+  if(S.ph!=='ask') return;
+  const c=STG()[S.i].ch[j], d=delta(c,S.t);
+  S.picks.push({s:S.i,j,d,before:S.t}); S.t=clamp(S.t+d,0,100); S.ph='res'; save(); render();
+  if(c.k==='force'){const el=$('card');el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake')}
+}
+function next(){
+  if(S.ph!=='res') return;
+  if(S.i<STG().length-1){S.i++;S.ph='ask'}else{S.ph='end';S.slide=0}
+  save(); render();
+}
+const SL=()=>S.e===0?['end','path','talk','quote','bridge']:['end','path','talk','quote'], NS=()=>SL().length;
+function slide(d){S.slide=clamp(S.slide+d,0,NS()-1);save();render()}
+function undo(){
+  if(S.ph==='alt') return S.alt.i>0?altStep(-1):altBack();
+  if(S.ph==='res'||S.ph==='end'){const p=S.picks.pop(); if(!p) return; S.t=p.before; S.i=p.s; S.ph='ask'}
+  else if(S.ph==='ask'&&S.i>0){const p=S.picks[S.picks.length-1]; S.i=p.s; S.ph='res'}
+  save(); render();
+}
+function restart(){S=fresh();save();render()}
+$('undo').onclick=undo;
+$('fs').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.();
+addEventListener('keydown',e=>{
+  if(S.ph==='ask'&&['1','2','3'].includes(e.key)) pick(+e.key-1);
+  else if(e.key==='Enter'||e.key==='ArrowRight'){
+    if(S.ph==='ep') go(); else if(S.ph==='res') next();
+    else if(S.ph==='end') S.slide<NS()-1?slide(1):S.e===0&&openEp(1);
+    else if(S.ph==='alt') S.alt.i<STG().length?altStep(1):altBack();
+  }
+  else if(e.key==='ArrowLeft'&&S.ph==='end') slide(-1);
+  else if(e.key==='Backspace') undo();
+});
+render();
+</script>
+</body>
+</html>
