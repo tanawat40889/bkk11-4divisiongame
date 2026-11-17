@@ -465,7 +465,7 @@ function render(){
       <h1>ทางแยก</h1>
       <p class="lede">เรื่องสมมุติ 2 ตอน ทั้งห้องช่วยกันเลือกทาง ยิ่งเลือกทางแห่งความกลัว ทุกอย่างยิ่งแย่ลง และเข็มนาฬิกายิ่งเข้าใกล้เที่ยงคืน</p>
       <div class="eps">${EPS.map((e,j)=>`<button class="ep" onclick="openEp(${j})"><small>${e.no} · ${e.st.length} ฉาก</small><b>${e.name}</b><span>${e.card}</span></button>`).join('')}</div>
-      <p class="hint" style="margin:0">อ่านสถานการณ์ → ทุกคนชู 1 / 2 / 3 นิ้ว (Zoom พิมพ์ในแชต) → กดทางที่เสียงส่วนใหญ่เลือก แล้วดูผลที่ตามมา</p>`;
+      <p class="hint" style="margin:0">อ่านสถานการณ์ → ทุกคนชู 1 / 2 / 3 นิ้ว → กดทางที่เสียงส่วนใหญ่เลือก แล้วดูผลที่ตามมา</p>`;
   }else if(S.ph==='ep'){
     c.innerHTML=`<div class="eyebrow">${EP().no} · ${STG().length} ฉาก</div><h1>${EP().name}</h1>
       <p class="lede">${EP().lede}</p>
@@ -489,14 +489,14 @@ function render(){
 function altT(k,n){let t=T0;for(let i=0;i<Math.min(n,STG().length);i++){t=clamp(t+delta(STG()[i].ch.find(x=>x.k===k),t),0,100)}return t}
 const altKind=()=>EP().ends.indexOf(endOf(S.e,S.t))>=2?'talk':'force';
 const ALT={force:'ถ้าเลือกทางแห่งความกลัวทุกครั้ง',talk:'ถ้าเลือกคุยกันทุกครั้ง'};
-function whatIf(){S.alt={k:altKind(),i:0};S.ph='alt';save();render()}
+function whatIf(){S.alt={k:altKind(),i:STG().length};S.ph='alt';save();render()}
 function altCard(c){
   const {k,i}=S.alt, n=STG().length;
   if(i>=n){
     const e=endOf(S.e,altT(k,n)), mine=endOf(S.e,S.t);
     c.innerHTML=`<div class="eyebrow">${ALT[k]} · ตอนจบ</div><h2>${e.icon} ${e.title}</h2><p class="res">${e.txt}</p>
       <p class="hint" style="margin:0 0 1em">ส่วนห้องเราจบที่ ${mine.icon} ${mine.title} · ทุกทางแยกเริ่มจากการเลือกเล็กๆ ของเราเอง</p>
-      <div class="row"><button class="ghost" onclick="altStep(-1)">← ก่อนหน้า</button><button class="go" onclick="altBack()">กลับไปตอนจบของเรา →</button></div>`;
+      <div class="row"><button class="go" onclick="altBack()">กลับไปตอนจบของเรา →</button></div>`;
     return;
   }
   const st=STG()[i], j=st.ch.findIndex(x=>x.k===k), x=st.ch[j], before=altT(k,i), d=delta(x,before);
@@ -524,8 +524,9 @@ function endSlide(c){
     <p class="res">เรื่องของสองเมืองอาจดูไกลตัว แต่ถ้าเป็นบ้านเรากับบ้านข้างๆ ล่ะ เราจะเลือกทางไหน?</p>
     <p class="hint" style="margin:0 0 1em">ต้นตอของความขัดแย้งไม่ต่างกันเลย ไม่ว่าจะระหว่างประเทศหรือระหว่างเพื่อนบ้าน คือความกลัว ความระแวง และการไม่ยอมคุยกัน</p>${nav(N,last)}`;
   else if(sl==='talk') c.innerHTML=`<div class="eyebrow">ชวนคุย</div>
-    <ul class="qs"><li>ถ้าเกิดสงครามขึ้น ใครบ้างที่จะได้รับผลกระทบ?</li><li>เราจะช่วยกันสร้างสังคมที่สงบสุขได้อย่างไร?</li></ul>
-    <p class="hint" style="margin:0 0 1em">สงครามหรือนิวเคลียร์ฟังดูเหมือนเรื่องไกลตัว แต่ต้นตอจริงๆ มาจากความกลัว ความระแวง และการไม่ยอมคุยกัน ทางออกไม่ได้อยู่ที่การเอาชนะ แต่เริ่มที่ “การเปิดใจฟัง”</p>${nav(N,last)}`;
+    ${first?`<ul class="qs"><li>ถ้าเกิดสงครามขึ้น ใครบ้างที่จะได้รับผลกระทบ?</li><li>เราจะช่วยกันสร้างสังคมที่สงบสุขได้อย่างไร?</li></ul>
+    <p class="hint" style="margin:0 0 1em">สงครามหรือนิวเคลียร์ฟังดูเหมือนเรื่องไกลตัว แต่ต้นตอจริงๆ มาจากความกลัว ความระแวง และการไม่ยอมคุยกัน ทางออกไม่ได้อยู่ที่การเอาชนะ แต่เริ่มที่ “การเปิดใจฟัง”</p>`:`<ul class="qs"><li>ความขัดแย้งเล็กๆ กับคนใกล้ตัว เริ่มจากอะไรบ่อยที่สุด?</li><li>ครั้งหน้าที่ไม่พอใจใคร เราจะเลือกทางไหนก่อน?</li></ul>
+    <p class="hint" style="margin:0 0 1em">กำแพงระหว่างเมืองกับกำแพงข้างบ้านเริ่มจากที่เดียวกัน คือความไม่พอใจเล็กๆ ที่ไม่ได้พูดคุย สันติภาพของโลกจึงเริ่มได้จากการเคาะประตูบ้านข้างๆ</p>`}${nav(N,last)}`;
   else c.innerHTML=`<div class="eyebrow">คำกล่าว</div>
     <blockquote>“เป็นที่แน่ชัดขึ้นทุกวันว่า อาวุธนิวเคลียร์ไม่สามารถใช้เป็นเครื่องมือในการบรรลุเป้าหมายเพื่อความมั่นคงได้ และแท้จริงแล้วยิ่งเวลาผ่านไป อาวุธนิวเคลียร์กลับยิ่งทำให้ความมั่นคงของมนุษย์เปราะบางขึ้น”<cite>อ.อิเคดะ สนทนากับมิคาอิล กอร์บาชอฟ</cite></blockquote>
     <blockquote>“หากห่วงใยต่อความปลอดภัยมั่นคงของตนเองแล้ว ก่อนอื่นควรอธิษฐานให้เกิดความสงบสุขและความเป็นระเบียบเรียบร้อยทั่วแผ่นดินมิใช่หรือ”<cite>พระนิชิเร็นไดโชนิน</cite></blockquote>
@@ -550,7 +551,7 @@ function next(){
 const SL=()=>S.e===0?['end','path','talk','quote','bridge']:['end','path','talk','quote'], NS=()=>SL().length;
 function slide(d){S.slide=clamp(S.slide+d,0,NS()-1);save();render()}
 function undo(){
-  if(S.ph==='alt') return S.alt.i>0?altStep(-1):altBack();
+  if(S.ph==='alt') return altBack();
   if(S.ph==='res'||S.ph==='end'){const p=S.picks.pop(); if(!p) return; S.t=p.before; S.i=p.s; S.ph='ask'}
   else if(S.ph==='ask'&&S.i>0){const p=S.picks[S.picks.length-1]; S.i=p.s; S.ph='res'}
   save(); render();
