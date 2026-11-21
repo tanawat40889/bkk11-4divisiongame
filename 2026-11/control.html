@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#120e16" />
+<title>ทางแยก · รีโมต</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;800&display=swap" rel="stylesheet" />
+<style>
+:root{--text:#fff8ee;--mute:#b9aeb8;--gold:#ffcf6b;--good:#7be0a6;--bad:#ff7a66;--line:rgba(255,255,255,.14);--card:rgba(255,255,255,.06)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:#120e16;color:var(--text);font-family:'Prompt',sans-serif}
+body{min-height:100dvh;display:flex;flex-direction:column;padding:calc(14px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));
+  background:radial-gradient(120% 60% at 50% 0,#3a2433 0,#120e16 70%)}
+button,input{font-family:inherit;color:inherit;border:0;background:none}
+button{cursor:pointer;touch-action:manipulation}
+header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+header b{font-size:18px;white-space:nowrap}
+.st,.clock{white-space:nowrap}
+.st{margin-left:auto;font-size:13px;color:var(--mute);display:flex;align-items:center;gap:6px}
+.st i{width:8px;height:8px;border-radius:50%;background:var(--bad)}
+.st.on i{background:var(--good)}
+.clock{font-size:13px;color:var(--gold)}
+
+#join{margin:auto 0;text-align:center}
+#join h1{font-size:28px;margin:0 0 6px}
+#join p{color:var(--mute);margin:0 0 22px;font-size:15px}
+#code{width:100%;max-width:280px;font-size:40px;font-weight:800;letter-spacing:.3em;text-align:center;padding:12px 0 12px .3em;border-radius:16px;background:var(--card);border:1px solid var(--line);outline:none}
+#code:focus{border-color:var(--gold)}
+.go{display:block;width:100%;max-width:280px;margin:14px auto 0;padding:16px;border-radius:99px;background:var(--gold);color:#2a1a08;font-weight:800;font-size:18px}
+.err{color:var(--bad);font-size:14px;min-height:1.4em;margin-top:10px}
+
+#ctl{display:none;flex:1;flex-direction:column;gap:12px}
+.ctx{padding:14px 16px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
+.eb{font-size:12px;color:var(--gold);letter-spacing:.02em}
+.h{font-size:20px;font-weight:600;margin:4px 0 0}
+.tx{font-size:14px;color:var(--mute);line-height:1.55;margin:6px 0 0;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.btns{display:flex;flex-direction:column;gap:10px;margin-top:auto}
+.btns button{padding:16px 18px;border-radius:18px;font-size:17px;text-align:left;transition:transform .1s}
+.btns button:active{transform:scale(.97)}
+.btns .ch{background:rgba(255,255,255,.09);border:1px solid var(--line);line-height:1.4}
+.btns .ch{display:flex;gap:12px;align-items:flex-start}
+.btns .ch b{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgba(255,207,107,.16);color:var(--gold);font-weight:800;font-size:15px}
+.btns .go{max-width:none;margin:0;text-align:center}
+.btns .gh{border:1px solid var(--line);text-align:center;font-size:15px;padding:13px}
+.bar{display:flex;gap:10px}
+.bar button{flex:1;padding:12px;border-radius:99px;border:1px solid var(--line);font-size:14px;color:var(--mute)}
+.bar button:disabled{opacity:.35}
+</style>
+</head>
+<body>
+<header><b>🌉 รีโมต</b><span class="clock" id="clock"></span><span class="st" id="st"><i></i><span id="stt">ยังไม่เชื่อม</span></span></header>
+
+<section id="join">
+  <h1>ใส่รหัส 4 หลัก</h1>
+  <p>กดปุ่ม 📱 บนจอเกม แล้วดูรหัสที่ขึ้น</p>
+  <input id="code" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="····" />
+  <button class="go" id="joinb">เชื่อมต่อ</button>
+  <div class="err" id="err"></div>
+</section>
+
+<section id="ctl">
+  <div class="ctx"><div class="eb" id="eb"></div><div class="h" id="h"></div><p class="tx" id="tx"></p></div>
+  <div class="btns" id="btns"></div>
+  <div class="bar"><button id="undo">↺ ย้อนกลับ</button><button id="leave">เปลี่ยนรหัส</button></div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+let peer=null, conn=null, code='';
+const status=(on,t)=>{$('st').classList.toggle('on',on);$('stt').textContent=t};
+function show(ctl){$('join').style.display=ctl?'none':'block';$('ctl').style.display=ctl?'flex':'none'}
+
+function connect(c){
+  code=c; $('err').textContent=''; status(false,'กำลังเชื่อม…');
+  if(!peer||peer.destroyed){peer=new Peer();peer.on('error',e=>{
+    status(false,'หลุด');
+    if(e.type==='peer-unavailable'){$('err').textContent='ไม่พบรหัสนี้ ตรวจรหัสบนจอเกมอีกครั้ง';show(false)}
+  })}
+  const open=()=>{
+    conn?.close(); conn=peer.connect('bkk11-ty-'+c,{reliable:true});
+    conn.on('open',()=>{status(true,'เชื่อมแล้ว');localStorage.rcode=c;history.replaceState(null,'','?c='+c);show(true);conn.send({a:'sync'})});
+    conn.on('data',draw);
+    conn.on('close',()=>status(false,'หลุด'));
+  };
+  peer.open?open():peer.once('open',open);
+}
+function send(m){if(conn?.open){conn.send(m);navigator.vibrate?.(12)}else connect(code)}
+function draw(d){
+  $('eb').textContent=d.eb||''; $('h').textContent=d.h||''; $('tx').textContent=d.tx||'';
+  $('h').style.display=d.h?'':'none'; $('tx').style.display=d.tx?'':'none';
+  $('clock').textContent=d.clock?'🕛 '+d.clock:'';
+  $('undo').disabled=!d.undo;
+  $('btns').innerHTML='';
+  d.btns.forEach((b,i)=>{const e=document.createElement('button');e.className=b.k;if(b.n){const n=document.createElement('b');n.textContent=b.n;e.append(n,document.createTextNode(b.l))}else e.textContent=b.l;e.onclick=()=>send({a:'btn',i});$('btns').append(e)});
+}
+$('undo').onclick=()=>send({a:'undo'});
+$('leave').onclick=()=>{conn?.close();status(false,'ยังไม่เชื่อม');$('code').value='';show(false);$('code').focus()};
+$('joinb').onclick=()=>{const c=$('code').value.trim();/^\d{4}$/.test(c)?connect(c):($('err').textContent='รหัสต้องเป็นตัวเลข 4 หลัก')};
+$('code').oninput=e=>{e.target.value=e.target.value.replace(/\D/g,'');if(e.target.value.length===4)$('joinb').click()};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&code&&!conn?.open)connect(code)});
+const q=new URLSearchParams(location.search).get('c');
+if(q&&/^\d{4}$/.test(q)){$('code').value=q;connect(q)}
+</script>
+</body>
+</html>
