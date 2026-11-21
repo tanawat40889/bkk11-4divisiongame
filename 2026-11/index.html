@@ -134,7 +134,8 @@ blockquote cite{display:block;margin-top:.35em;font-style:normal;font-size:clamp
 #rm .qr svg{width:100%;height:auto;display:block}
 #rm .code{font-size:clamp(30px,5.4vmin,46px);letter-spacing:.22em;color:var(--gold);font-weight:800;margin:.05em 0 .1em}
 #rm .x{position:absolute;top:10px;right:10px}
-.ib.live{border-color:var(--good);box-shadow:inset 0 0 0 1px var(--good)}
+.rb{height:clamp(34px,4.6vmin,46px);padding:0 1em;border-radius:99px;background:var(--glass);border:1px solid rgba(255,207,107,.55);color:var(--gold);font-weight:600;font-size:clamp(13px,1.8vmin,17px);white-space:nowrap;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.rb.live{border-color:var(--good);color:var(--good)}
 </style>
 </head>
 <body>
@@ -222,7 +223,7 @@ blockquote cite{display:block;margin-top:.35em;font-style:normal;font-size:clamp
   <div class="dots" id="dots"></div>
   <button class="ib" id="undo" title="ย้อนกลับ (Backspace)">↺</button>
   <button class="ib" id="fs" title="เต็มจอ">⛶</button>
-  <button class="ib" id="rbtn" title="คุมด้วยมือถือ">📱</button>
+  <button class="rb" id="rbtn" title="คุมด้วยมือถือ">📱 รีโมต</button>
   <div class="clock" title="นาฬิกาวันสิ้นโลก">
     <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
       <circle cx="24" cy="5.5" r="2.2" fill="#ff7a66"/><line id="hand" x1="24" y1="24" x2="24" y2="8" stroke="#ffcf6b" stroke-width="3" stroke-linecap="round"/><circle cx="24" cy="24" r="2.5" fill="#ffcf6b"/></svg>
@@ -594,7 +595,7 @@ function snap(){
     btns:[...c.querySelectorAll('button')].map(b=>{const t=x=>b.querySelector(x)?.innerText.trim()||'', cl=b.classList;
       return cl.contains('ch')?{k:'ch',n:t('b'),l:t('span')}:cl.contains('ep')?{k:'ch',n:'▸',l:t('b')+' · '+t('small')}:{k:cl.contains('go')?'go':'gh',l:b.innerText.replace(/\s+/g,' ').trim()}})};
 }
-function push(){const d=snap();R.conns=R.conns.filter(c=>c.open);R.conns.forEach(c=>c.send(d));$('rbtn').classList.toggle('live',R.conns.length>0)}
+function push(){const d=snap();R.conns=R.conns.filter(c=>c.open);R.conns.forEach(c=>c.send(d));const on=R.conns.length>0;$('rbtn').classList.toggle('live',on);$('rbtn').textContent=on?'📱 เชื่อมแล้ว':'📱 รีโมต'}
 new MutationObserver(()=>{clearTimeout(R.t);R.t=setTimeout(push,60)}).observe($('card'),{childList:true,subtree:true});
 async function remote(){
   $('rm').classList.add('on'); if(R.peer&&!R.peer.destroyed) return;
