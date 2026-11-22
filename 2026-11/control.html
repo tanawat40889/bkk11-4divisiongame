@@ -64,7 +64,7 @@ header b{font-size:18px;white-space:nowrap}
 <section id="ctl">
   <div class="ctx"><div class="eb" id="eb"></div><div class="h" id="h"></div><p class="tx" id="tx"></p></div>
   <div class="btns" id="btns"></div>
-  <div class="bar"><button id="undo">↺ ย้อนกลับ</button><button id="leave">เปลี่ยนรหัส</button></div>
+  <div class="bar"><button id="undo">↺ ย้อนกลับ</button><button id="reset">⟲ เริ่มใหม่</button><button id="leave">เปลี่ยนรหัส</button></div>
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
@@ -98,6 +98,7 @@ function draw(d){
   d.btns.forEach((b,i)=>{const e=document.createElement('button');e.className=b.k;if(b.n){const n=document.createElement('b');n.textContent=b.n;e.append(n,document.createTextNode(b.l))}else e.textContent=b.l;e.onclick=()=>send({a:'btn',i});$('btns').append(e)});
 }
 $('undo').onclick=()=>send({a:'undo'});
+$('reset').onclick=()=>confirm('เริ่มเกมใหม่ทั้งหมด?')&&send({a:'reset'});
 $('leave').onclick=()=>{conn?.close();status(false,'ยังไม่เชื่อม');$('code').value='';show(false);$('code').focus()};
 $('joinb').onclick=()=>{const c=$('code').value.trim();/^\d{4}$/.test(c)?connect(c):($('err').textContent='รหัสต้องเป็นตัวเลข 4 หลัก')};
 $('code').oninput=e=>{e.target.value=e.target.value.replace(/\D/g,'');if(e.target.value.length===4)$('joinb').click()};

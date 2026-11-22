@@ -135,6 +135,9 @@ blockquote cite{display:block;margin-top:.35em;font-style:normal;font-size:clamp
 #rm .code{font-size:clamp(30px,5.4vmin,46px);letter-spacing:.22em;color:var(--gold);font-weight:800;margin:.05em 0 .1em}
 #rm .x{position:absolute;top:10px;right:10px}
 .rb{height:clamp(34px,4.6vmin,46px);padding:0 1em;border-radius:99px;background:var(--glass);border:1px solid rgba(255,207,107,.55);color:var(--gold);font-weight:600;font-size:clamp(13px,1.8vmin,17px);white-space:nowrap;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.rb .t{white-space:nowrap}
+@media(max-width:560px){.rb .t{display:none}.rb{padding:0;width:clamp(34px,4.6vmin,46px)}}
+.rb.gh{border-color:var(--line);color:var(--text);font-weight:500}
 .rb.live{border-color:var(--good);color:var(--good)}
 </style>
 </head>
@@ -221,9 +224,10 @@ blockquote cite{display:block;margin-top:.35em;font-style:normal;font-size:clamp
 <div class="top">
   <a class="home" href="../">← หน้าแรก</a>
   <div class="dots" id="dots"></div>
+  <button class="rb gh" id="reset" title="เริ่มเกมใหม่ทั้งหมด">⟲<span class="t"> เริ่มใหม่</span></button>
   <button class="ib" id="undo" title="ย้อนกลับ (Backspace)">↺</button>
   <button class="ib" id="fs" title="เต็มจอ">⛶</button>
-  <button class="rb" id="rbtn" title="คุมด้วยมือถือ">📱 รีโมต</button>
+  <button class="rb" id="rbtn" title="คุมด้วยมือถือ">📱<span class="t"> รีโมต</span></button>
   <div class="clock" title="นาฬิกาวันสิ้นโลก">
     <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
       <circle cx="24" cy="5.5" r="2.2" fill="#ff7a66"/><line id="hand" x1="24" y1="24" x2="24" y2="8" stroke="#ffcf6b" stroke-width="3" stroke-linecap="round"/><circle cx="24" cy="24" r="2.5" fill="#ffcf6b"/></svg>
@@ -572,6 +576,8 @@ function undo(){
   save(); render();
 }
 function restart(){S=fresh();save();render()}
+function resetAll(ask=true){if(S.ph==='intro'||!ask||confirm('เริ่มเกมใหม่ทั้งหมด? ผลการเลือกของทั้ง 2 ตอนจะถูกล้าง'))restart()}
+$('reset').onclick=()=>resetAll();
 $('undo').onclick=undo;
 $('fs').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.();
 addEventListener('keydown',e=>{
@@ -595,7 +601,7 @@ function snap(){
     btns:[...c.querySelectorAll('button')].map(b=>{const t=x=>b.querySelector(x)?.innerText.trim()||'', cl=b.classList;
       return cl.contains('ch')?{k:'ch',n:t('b'),l:t('span')}:cl.contains('ep')?{k:'ch',n:'▸',l:t('b')+' · '+t('small')}:{k:cl.contains('go')?'go':'gh',l:b.innerText.replace(/\s+/g,' ').trim()}})};
 }
-function push(){const d=snap();R.conns=R.conns.filter(c=>c.open);R.conns.forEach(c=>c.send(d));const on=R.conns.length>0;$('rbtn').classList.toggle('live',on);$('rbtn').textContent=on?'📱 เชื่อมแล้ว':'📱 รีโมต'}
+function push(){const d=snap();R.conns=R.conns.filter(c=>c.open);R.conns.forEach(c=>c.send(d));const on=R.conns.length>0;$('rbtn').classList.toggle('live',on);$('rbtn').innerHTML='📱<span class="t"> '+(on?'เชื่อมแล้ว':'รีโมต')+'</span>'}
 new MutationObserver(()=>{clearTimeout(R.t);R.t=setTimeout(push,60)}).observe($('card'),{childList:true,subtree:true});
 async function remote(){
   $('rm').classList.add('on'); if(R.peer&&!R.peer.destroyed) return;
@@ -608,7 +614,7 @@ async function remote(){
   p.on('error',e=>{if(e.type==='unavailable-id'){delete sessionStorage.rc;p.destroy();remote()}else $('rmsg').textContent='เชื่อมต่อไม่ได้ ('+e.type+')'});
   p.on('disconnected',()=>!p.destroyed&&p.reconnect());
   p.on('connection',c=>{c.on('open',()=>{R.conns.push(c);push();$('rm').classList.remove('on')});
-    c.on('data',m=>{if(m.a==='btn')$('card').querySelectorAll('button')[m.i]?.click();else if(m.a==='undo')undo();else if(m.a==='sync')push()});
+    c.on('data',m=>{if(m.a==='btn')$('card').querySelectorAll('button')[m.i]?.click();else if(m.a==='undo')undo();else if(m.a==='reset')resetAll(false);else if(m.a==='sync')push()});
     c.on('close',push)});
 }
 $('rbtn').onclick=remote;
